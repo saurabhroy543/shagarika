@@ -43,16 +43,36 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   snippet_coder_utils: ^1.0.12
   intl: ^0.17.0
+
+  #Storage
+  get_storage: ^2.0.2
+
+  #splash and App Icon
   flutter_native_splash: ^2.2.10+1
   flutter_launcher_icons: "^0.10.0"
+
+  # state management
   get: ^4.1.4
+
   flutter_screenutil: ^5.3.1
 
+  #networking:
+  dio: ^4.0.0
+
+  #others:
+  flutter_easyloading: ^3.0.3
+  pie_chart: ^5.1.0
 
 
 
+
+
+
+
+#splash screen
 flutter_native_splash:
     color: "#ffffff"
+#App Icon
 flutter_icons:
   android: "launcher_icon"
   ios: true
