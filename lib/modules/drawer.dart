@@ -5,7 +5,6 @@ import 'package:shagarika/modules/profile.dart';
 import 'package:shagarika/modules/purchase_request.dart';
 import 'package:shagarika/modules/switch_request.dart';
 import 'package:shagarika/modules/transaction_report.dart';
-
 import 'Capital_Gain_Report.dart';
 import 'Detail_holding report.dart';
 import 'Redeemption_request.dart';
