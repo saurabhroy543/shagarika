@@ -24,12 +24,12 @@ class Storage {
 
   static set userId(String? value) => box?.write(StorageKeys.userId, value);
 
-  // Username
+  // User name
   static String? get username => box?.read(StorageKeys.username);
 
   static set username(String? value) => box?.write(StorageKeys.username, value);
 
-  // Domainname
+  // Domain name
   static String get domainname => box?.read(StorageKeys.domainName);
 
   static set domainname(String value) =>
@@ -47,7 +47,7 @@ class Storage {
   static set isApproval(bool? value) =>
       box?.write(StorageKeys.isApproval, value);
 
-  // is Superuser
+  // is Super user
   static bool? get isSuperuser => box?.read(StorageKeys.isSuperuser);
 
   static set isSuperuser(bool? value) =>
