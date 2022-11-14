@@ -1,12 +1,12 @@
 class UserModel {
-  int? error_code;
+  int? errorCode;
   String? msg;
   UserDetail? user_detail;
 
-  UserModel({this.error_code, this.msg, this.user_detail});
+  UserModel({this.errorCode, this.msg, this.user_detail});
 
   UserModel.fromJson(Map<String, dynamic> json) {
-    error_code = json['error_code'];
+    errorCode = json['error_code'];
     msg = json['msg'];
     user_detail = json['user_detail'] != null
         ? UserDetail.fromJson(json['user_detail'])
@@ -15,7 +15,7 @@ class UserModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['error_code'] = error_code;
+    data['error_code'] = errorCode;
     data['msg'] = msg;
     if (user_detail != null) {
       data['user_detail'] = user_detail?.toJson();
