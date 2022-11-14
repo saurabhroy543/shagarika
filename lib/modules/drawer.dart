@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shagarika/modules/dashboard.dart';
-import 'package:shagarika/modules/profile.dart';
+import 'package:shagarika/modules/Capital_Gain_Report.dart';
+import 'package:shagarika/modules/Redeemption_request.dart';
+import 'package:shagarika/modules/SIP_request.dart';
 import 'package:shagarika/modules/purchase_request.dart';
 import 'package:shagarika/modules/switch_request.dart';
 import 'package:shagarika/modules/transaction_report.dart';
-import 'Capital_Gain_Report.dart';
+import '../utils/app_pages.dart';
+import '../utils/app_utils.dart';
+import '../utils/storage.dart';
 import 'Detail_holding report.dart';
-import 'Redeemption_request.dart';
-import 'SIP_request.dart';
-import 'change_password.dart';
+import 'controllers/dashboard_controller.dart';
 
 class SideDrawer extends StatelessWidget {
-  const SideDrawer({Key? key}) : super(key: key);
+
+  // final dashboardController = Get.put(DashboardController());
+
+   SideDrawer({Key? key}) : super(key: key);
 
   Widget drawerOptions(
       {required Widget leading,
@@ -48,7 +52,7 @@ class SideDrawer extends StatelessWidget {
                   child: Center(
                     child: GestureDetector(
                       onTap: () {
-                        // Get.offNamed(MyDashboard());
+                        Get.to(Routes.dashboard);
                       },
                       child: Row(
                         children: [
@@ -91,10 +95,7 @@ class SideDrawer extends StatelessWidget {
                                       color: Colors.black,
                                     ),
                                     onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) => const Profile()));
+                                      Get.toNamed(Routes.profile);
                                     },
                                   ),
                                 ),
@@ -111,9 +112,9 @@ class SideDrawer extends StatelessWidget {
                               Container(
                                 constraints: const BoxConstraints(
                                     maxWidth: 180, minWidth: 100),
-                                child: const Text('Ravi Kumar',
+                                child: Text('${Storage.username}',
                                     textAlign: TextAlign.start,
-                                    style: TextStyle(fontSize: 20.0)),
+                                    style: const TextStyle(fontSize: 20.0)),
                               ),
                               const Text('',
                                   textAlign: TextAlign.start,
@@ -140,11 +141,7 @@ class SideDrawer extends StatelessWidget {
                     ),
                     text: 'Dashboard',
                     onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const MyDashboard()));
-                      Get.back();
+                      Get.toNamed(Routes.dashboard);
                     }),
                 const SizedBox(
                   height: 5,
@@ -171,11 +168,7 @@ class SideDrawer extends StatelessWidget {
                           ),
                           text: 'Purchase Request',
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const PurchaseRequest()));
-                            Get.back();
+                            Get.to(() => const PurchaseRequest());
                           }),
                       drawerOptions(
                           leading: const Icon(
@@ -184,11 +177,7 @@ class SideDrawer extends StatelessWidget {
                           ),
                           text: 'SIP Request',
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const SIPrequest()));
-                            Get.back();
+                            Get.to(() => const SIPrequest());
                           }),
                       drawerOptions(
                           leading: const Icon(
@@ -197,11 +186,7 @@ class SideDrawer extends StatelessWidget {
                           ),
                           text: 'Switch Request',
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const SwitchRequest()));
-                            Get.back();
+                            Get.to(() => const SwitchRequest());
                           }),
                       drawerOptions(
                           leading: const Icon(
@@ -210,11 +195,7 @@ class SideDrawer extends StatelessWidget {
                           ),
                           text: 'Redemption Request',
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const RedemptionRequest()));
-                            Get.back();
+                            Get.to(() => const RedemptionRequest());
                           }),
                     ],
                   ),
@@ -236,8 +217,7 @@ class SideDrawer extends StatelessWidget {
                           ),
                           text: 'Total Investment Report',
                           onTap: () {
-                            // Get.off(() => LeaveBalanceView());
-                            Get.back();
+                            // Get.to(() => LeaveBalanceView());
                           }),
                       drawerOptions(
                           leading: const Icon(
@@ -246,11 +226,7 @@ class SideDrawer extends StatelessWidget {
                           ),
                           text: 'Capital Gain Report',
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const CapitalGainReport()));
-                            Get.back();
+                            Get.off(() => const CapitalGainReport());
                           }),
                       drawerOptions(
                           leading: const Icon(
@@ -259,23 +235,15 @@ class SideDrawer extends StatelessWidget {
                           ),
                           text: 'Detail Holding Report',
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const DetailedHoldingReport()));
-                            Get.back();
+                            Get.to(() => const DetailedHoldingReport());
+                             Get.back();
                           }),
                       drawerOptions(
                           leading:
                               const Icon(Icons.assignment, color: Colors.blue),
                           text: 'Transaction Report',
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => TransactionReport()));
-                            Get.back();
+                            Get.to(() => const TransactionReport());
                           }),
                       drawerOptions(
                           leading: const Icon(
@@ -284,7 +252,7 @@ class SideDrawer extends StatelessWidget {
                           ),
                           text: 'Active SIP Report',
                           onTap: () {
-                            // Get.off(() => CompOffView());
+                            // Get.to(() => ActiveSipReport());
                             Get.back();
                           }),
                     ],
@@ -297,9 +265,7 @@ class SideDrawer extends StatelessWidget {
                     ),
                     text: 'Change Password',
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => ChangePassword()));
-                      Get.back();
+                      Get.toNamed(Routes.changePassword);
                     }),
                 const SizedBox(
                   height: 5,
@@ -311,10 +277,11 @@ class SideDrawer extends StatelessWidget {
                     ),
                     text: 'Logout',
                     onTap: () {
-                      // AppUtils.logout();
+                      AppUtils.logout();
                       // Get.back();
-                      // Get.offAllNamed(Routes.domain);
-                    }),
+                      Get.offAllNamed(Routes.login);
+                    }
+                    ),
               ],
             ),
             const SizedBox(
