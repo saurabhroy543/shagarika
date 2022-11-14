@@ -22,8 +22,9 @@ class LoginController extends GetxController {
         seconds: 5,
       )).then((value) => EasyLoading.dismiss());
       UserModel response = await userRepo.userLogin(usernameFilled, password);
-      if (response.error_code == 0) {
+      if (response.errorCode == 0) {
         Storage.userId = response.user_detail?.userId.toString() ?? "";
+        Storage.username = response.user_detail?.name.toString() ?? "";
         NetworkRequester.shared.prepareRequest();
         EasyLoading.dismiss();
         Get.offNamed(Routes.dashboard);
