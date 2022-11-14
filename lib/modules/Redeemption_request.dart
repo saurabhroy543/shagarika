@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 
+import 'drawer.dart';
+
 class RedemptionRequest extends StatefulWidget {
   const RedemptionRequest({Key? key}) : super(key: key);
 
@@ -53,6 +55,7 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
         backgroundColor: Colors.blue,
       ),
       body: _uiWidget(),
+      drawer: SideDrawer(),
     );
   }
 

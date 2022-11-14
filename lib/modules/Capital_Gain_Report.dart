@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:intl/intl.dart';
 
+import 'drawer.dart';
+
 class CapitalGainReport extends StatefulWidget {
   const CapitalGainReport({Key? key}) : super(key: key);
 
@@ -51,6 +53,7 @@ class _CapitalGainReportState extends State<CapitalGainReport> {
         title: const Text("Capital Gain Report"),
         backgroundColor: Colors.blue,
       ),
+      drawer: SideDrawer(),
       body: _uiWidget(),
     );
   }

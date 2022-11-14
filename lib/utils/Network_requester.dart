@@ -18,7 +18,7 @@ class NetworkRequester {
     BaseOptions dioOptions = BaseOptions(
       connectTimeout: Timeouts.connectTimeout,
       receiveTimeout: Timeouts.receiveTimeout,
-      baseUrl: BaseUrl.baseurl,
+      baseUrl: Base.baseurl,
       contentType: Headers.formUrlEncodedContentType,
       responseType: ResponseType.json,
       headers: {'Accept': Headers.jsonContentType},

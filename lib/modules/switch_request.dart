@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 
+import 'drawer.dart';
+
 class SwitchRequest extends StatefulWidget {
   const SwitchRequest({Key? key}) : super(key: key);
 
@@ -53,6 +55,8 @@ class _SwitchRequestState extends State<SwitchRequest> {
         backgroundColor: Colors.blue,
       ),
       body: _uiWidget(),
+      drawer: SideDrawer(),
+
     );
   }
 

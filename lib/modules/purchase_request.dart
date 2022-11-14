@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 
+import 'drawer.dart';
+
 class PurchaseRequest extends StatefulWidget {
   const PurchaseRequest({Key? key}) : super(key: key);
 
@@ -50,6 +52,7 @@ class _PurchaseRequestState extends State<PurchaseRequest> {
         title: const Text("Purchase Request"),
         backgroundColor: Colors.blue,
       ),
+      drawer: SideDrawer(),
       body: _uiWidget(),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'dashboard.dart';
+import 'drawer.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key});
@@ -14,6 +15,7 @@ class _ChangePasswordState extends State<ChangePassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      drawer: SideDrawer(),
       appBar: AppBar(
         title: Text("Change Password"),
       ),

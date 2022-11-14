@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:intl/intl.dart';
 
+import 'drawer.dart';
+
 class TransactionReport extends StatefulWidget {
   const TransactionReport({Key? key}) : super(key: key);
 
@@ -48,10 +50,12 @@ class _TransactionReportState extends State<TransactionReport> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Transaction Type"),
+        title: const Text("Transaction Report"),
         backgroundColor: Colors.blue,
       ),
       body: _uiWidget(),
+      drawer: SideDrawer(),
+
     );
   }
 

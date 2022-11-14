@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:intl/intl.dart';
 
+import 'drawer.dart';
+
 class DetailedHoldingReport extends StatefulWidget {
   const DetailedHoldingReport({Key? key}) : super(key: key);
 
@@ -45,6 +47,7 @@ class _DetailedHoldingReportState extends State<DetailedHoldingReport> {
         backgroundColor: Colors.blue,
       ),
       body: _uiWidget(),
+      drawer: SideDrawer(),
     );
   }
 

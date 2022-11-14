@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'package:intl/intl.dart';
 
+import 'drawer.dart';
+
 class SIPrequest extends StatefulWidget {
   const SIPrequest({Key? key}) : super(key: key);
 
@@ -70,6 +72,7 @@ class _SIPrequestState extends State<SIPrequest> {
         backgroundColor: Colors.blue,
       ),
       body: _uiWidget(),
+      drawer: SideDrawer(),
     );
   }
 
