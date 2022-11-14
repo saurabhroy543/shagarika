@@ -2,8 +2,9 @@ class Timeouts {
   static const connectTimeout = 15000; // 15 seconds
   static const receiveTimeout = 15000; // 15 seconds
 }
-class BaseUrl{
+class Base{
   static const baseurl = 'https://api.shagarika.com';
+  static const arnNo = 104069;
 
 }
 class ErrorMessages {
