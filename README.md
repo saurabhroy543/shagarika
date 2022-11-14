@@ -1,6 +1,6 @@
 # shagarika
 
-A new Flutter project.
+Fintech App for buying and selling mutuals funds and SIPs.
 
 ## Getting Started
 
