@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 
 class AppUtils {
   static logout() {
-    Get.offAllNamed(Routes.login);
     Storage.clear();
+    Get.offAllNamed(Routes.login);
   }
 
-  static bool isLoggedIn() => Storage.token != null && Storage.token != "";
+  static bool isLoggedIn() => Storage.userId != null && Storage.userId != "";
 }
