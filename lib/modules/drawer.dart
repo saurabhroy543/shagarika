@@ -10,13 +10,10 @@ import '../utils/app_pages.dart';
 import '../utils/app_utils.dart';
 import '../utils/storage.dart';
 import 'Detail_holding report.dart';
-import 'controllers/dashboard_controller.dart';
 
 class SideDrawer extends StatelessWidget {
 
-  // final dashboardController = Get.put(DashboardController());
-
-   SideDrawer({Key? key}) : super(key: key);
+  SideDrawer({Key? key}) : super(key: key);
 
   Widget drawerOptions(
       {required Widget leading,
@@ -54,72 +51,23 @@ class SideDrawer extends StatelessWidget {
                       onTap: () {
                         Get.to(Routes.dashboard);
                       },
-                      child: Row(
+                      child: Column(
                         children: [
                           Stack(
                             children: [
                               Container(
-                                width: 80,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        width: 4, color: Colors.black54),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          spreadRadius: 2,
-                                          blurRadius: 10,
-                                          color: Colors.black.withOpacity(0.1))
-                                    ],
-                                    shape: BoxShape.circle,
-                                    image: const DecorationImage(
-                                      image: NetworkImage(
-                                          'https://www.whatsappimages.in/wp-content/uploads/2021/07/Top-HD-sad-quotes-for-whatsapp-status-in-hindi-Pics-Images-Download-Free.gif'),
-                                      fit: BoxFit.cover,
-                                    )),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Container(
-                                  height: 30,
-                                  width: 30,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                        width: 4, color: Colors.white),
-                                    color: Colors.blue,
-                                  ),
-                                  child: InkWell(
-                                    child: const Icon(
-                                      Icons.edit,
-                                      color: Colors.black,
-                                    ),
-                                    onTap: () {
-                                      Get.toNamed(Routes.profile);
-                                    },
-                                  ),
-                                ),
+                                width: 250,
+                                height: 70,
+                                color: Colors.yellow,
+                                child: Image.asset("assets/fintech.png"),
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                constraints: const BoxConstraints(
-                                    maxWidth: 180, minWidth: 100),
-                                child: Text('${Storage.username}',
-                                    textAlign: TextAlign.start,
-                                    style: const TextStyle(fontSize: 20.0)),
-                              ),
-                              const Text('',
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(fontSize: 20.0)),
-                            ],
+                          Container(
+                            constraints: const BoxConstraints(
+                                maxWidth: 180, minWidth: 100),
+                            child: Text('${Storage.username}',
+                                style: const TextStyle(color:Colors.blue,fontSize: 20.0)),
                           ),
                         ],
                       ),
@@ -236,7 +184,7 @@ class SideDrawer extends StatelessWidget {
                           text: 'Detail Holding Report',
                           onTap: () {
                             Get.to(() => const DetailedHoldingReport());
-                             Get.back();
+                            Get.back();
                           }),
                       drawerOptions(
                           leading:
@@ -280,8 +228,7 @@ class SideDrawer extends StatelessWidget {
                       AppUtils.logout();
                       // Get.back();
                       Get.offAllNamed(Routes.login);
-                    }
-                    ),
+                    }),
               ],
             ),
             const SizedBox(
