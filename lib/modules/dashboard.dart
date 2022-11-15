@@ -1,85 +1,135 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'controllers/dashboard_controller.dart';
 import 'drawer.dart';
 import 'package:get/get.dart';
 import 'package:pie_chart/pie_chart.dart';
-
-class MyDashboard extends StatefulWidget {
+import 'package:shagarika/utils/storage.dart';
+class MyDashboard extends StatelessWidget {
   const MyDashboard({Key? key}) : super(key: key);
 
   @override
-  _MyDashboardState createState() => _MyDashboardState();
-}
-
-class _MyDashboardState extends State<MyDashboard> {
-  Map<String, double> dataMap = {
-    "Present:20.0": 20,
-    "Absent: 30": 30,
-    "Leave: 40": 40,
-    "Holiday: 50": 50,
-    "On Duty : 20": 20,
-  };
-  List<Color> colorList = [
-    Colors.blue,
-    Colors.red,
-    Colors.yellow,
-    Colors.purple,
-    Colors.green
-  ];
-
-  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        drawer: const SideDrawer(),
-        appBar: AppBar(
-          title: const Text("Dashboard"),
-          backgroundColor: Colors.blue,
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: SingleChildScrollView(
-              child: Column(
+    return GetBuilder<DashboardController>(
+        init: DashboardController(),
+        builder: (controller) {
+          return SafeArea(
+            child: Scaffold(
+              drawer: SideDrawer(),
+              appBar: AppBar(
+                title: const Text("Dashboard"),
+                backgroundColor: Colors.blue,
+                elevation: 0,
+              ),
+              body: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: controller.isLoading.value
+                    ? const Center(child: CircularProgressIndicator())
+                    : RefreshIndicator(
+                        onRefresh: () async {
+                          controller.isLoading(true);
+                          controller.onInit();
+                          controller.update();
+                          controller.isLoading(false);
+                        },
+                        child: SingleChildScrollView(
+                            child: Column(
+                          children: [
+                             Center(
+                              child: Text.rich(TextSpan(children: [
+                                const TextSpan(
+                                    text: 'Welcome ',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black)),
+                                TextSpan(
+                                    text: '${Storage.username}',
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.blue)),
+                              ])),
+                            ),
+                            leaveCard(controller),
+                            assetChart(controller, context),
+                            amcChart(controller, context),
+                            Row(
+                              children: [
+                                detailCard('No. of Active SIP', 2),
+                                detailCard('Your SIP', 4000),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                detailCard('Lumpsum Investment', 11999),
+                              ],
+                            )
+                          ],
+                        )),
+                      ),
+              ),
+            ),
+          );
+        });
+  }
+
+  Widget amcChart(DashboardController controller, BuildContext context) {
+    return Card(
+      elevation: 3,
+      child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
             children: [
-              const Center(
-                child: Text.rich(TextSpan(children: [
-                  TextSpan(
-                      text: 'Welcome ',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black45)),
-                  TextSpan(
-                      text: "Rishi",
-                      // '${controller.userModel.user.firstName.capitalizeFirst}',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.blue)),
-                ])),
-              ),
-              leaveCard(),
-              assetChart(),
-              amcChart(),
               Row(
-                children: [
-                  detailCard('No. of Active SIP', 2),
-                  detailCard('Your SIP', 4000),
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text(
+                    'AMC Wise Breakup',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
-              Row(
-                children: [
-                  detailCard('Lumpsum Investment', 11999),
-                ],
-              )
+              SizedBox(
+                height: 250.0,
+                width: MediaQuery.of(context).size.width * 1,
+                child: PieChart(
+                  dataMap: controller.amcDataMap,
+                  animationDuration: const Duration(milliseconds: 600),
+                  chartLegendSpacing: 30,
+                  colorList: controller.colorList,
+                  initialAngleInDegree: 10,
+                  chartRadius: 100,
+                  chartType: ChartType.ring,
+                  ringStrokeWidth: 40,
+                  legendOptions: const LegendOptions(
+                    showLegendsInRow: false,
+                    legendPosition: LegendPosition.bottom,
+                    showLegends: true,
+                    legendShape: BoxShape.circle,
+                    legendTextStyle:
+                        TextStyle(fontWeight: FontWeight.normal, fontSize: 13),
+                  ),
+                  chartValuesOptions: const ChartValuesOptions(
+                    showChartValueBackground: true,
+                    showChartValues: true,
+                    chartValueStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        backgroundColor: Colors.transparent,
+                        fontSize: 10,
+                        color: Colors.black),
+                    showChartValuesInPercentage: false,
+                    showChartValuesOutside: false,
+                    decimalPlaces: 1,
+                  ),
+                ),
+              ),
             ],
           )),
-        ),
-      ),
     );
   }
 
-  Widget assetChart() {
+  Widget assetChart(DashboardController controller, BuildContext context) {
     return Card(
       elevation: 3,
       child: Padding(
@@ -99,10 +149,10 @@ class _MyDashboardState extends State<MyDashboard> {
                 height: 200.0,
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: PieChart(
-                  dataMap: dataMap,
+                  dataMap: controller.dataMap,
                   animationDuration: const Duration(milliseconds: 600),
                   chartLegendSpacing: 20,
-                  colorList: colorList,
+                  colorList: controller.colorList,
                   initialAngleInDegree: 0,
                   chartType: ChartType.disc,
                   ringStrokeWidth: 30,
@@ -132,60 +182,7 @@ class _MyDashboardState extends State<MyDashboard> {
     );
   }
 
-  Widget amcChart() {
-    return Card(
-      elevation: 3,
-      child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text(
-                    'Asset Class Breakup',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              Container(
-                height: 200.0,
-                width: MediaQuery.of(context).size.width * 0.8,
-                child: PieChart(
-                  dataMap: dataMap,
-                  animationDuration: const Duration(milliseconds: 600),
-                  chartLegendSpacing: 20,
-                  colorList: colorList,
-                  initialAngleInDegree: 0,
-                  chartType: ChartType.disc,
-                  ringStrokeWidth: 30,
-                  legendOptions: const LegendOptions(
-                    showLegendsInRow: false,
-                    legendPosition: LegendPosition.right,
-                    showLegends: true,
-                    legendShape: BoxShape.circle,
-                    legendTextStyle:
-                        TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                  ),
-                  chartValuesOptions: const ChartValuesOptions(
-                    showChartValueBackground: true,
-                    showChartValues: true,
-                    chartValueStyle: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 10,
-                        color: Colors.black),
-                    showChartValuesInPercentage: false,
-                    showChartValuesOutside: false,
-                    decimalPlaces: 1,
-                  ),
-                ),
-              ),
-            ],
-          )),
-    );
-  }
-
-  Widget leaveCard() {
+  Widget leaveCard(DashboardController controller) {
     return Card(
       elevation: 3,
       child: Padding(
@@ -196,8 +193,8 @@ class _MyDashboardState extends State<MyDashboard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: const [
                 Text(
-                  'Leave Summary',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  'Investment Summary',
+                  style: TextStyle(fontWeight: FontWeight.w900),
                 ),
               ],
             ),
@@ -210,20 +207,16 @@ class _MyDashboardState extends State<MyDashboard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Type',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
-                    Container(
+                    SizedBox(
                       width: Get.width / 2,
                       child: ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: 4,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: controller.summaryName.length,
                           itemBuilder: (context, index) {
-                            return const Text('Item',
-                                style: TextStyle(
+                            return  Text(controller.summaryName[index],
+                                style: const TextStyle(
                                     fontWeight: FontWeight.normal,
                                     fontSize: 15,
                                     color: Colors.black87));
@@ -234,23 +227,18 @@ class _MyDashboardState extends State<MyDashboard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const Text('Remaining',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 15,
-                            color: Colors.grey)),
-                    Container(
-                      width: Get.width / 9,
+                    SizedBox(
+                      width: Get.width / 5,
                       child: ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: 4,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: controller.summaryAmount.length,
                           itemBuilder: (context, index) {
-                            return const Text('Item',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700,
+                            return  Text(controller.summaryAmount[index].toString(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
                                     fontSize: 15,
-                                    color: Colors.grey));
+                                    color: Colors.black87));
                           }),
                     )
                   ],

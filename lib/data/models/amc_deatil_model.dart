@@ -58,7 +58,7 @@ class Amc {
   String? amcCode;
   int? amount;
   int? currentValue;
-  double? percentage;
+  dynamic percentage;
   String? aMCName;
 
   Amc(
