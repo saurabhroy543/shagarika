@@ -16,7 +16,7 @@ class Splash extends StatelessWidget {
               child: Container(
                 height: 120,
                 width: double.infinity,
-                child: Image.asset("assets/cpc-logo.png"),
+                child: Image.asset("assets/fintech.png"),
               ),
             ),
           );
