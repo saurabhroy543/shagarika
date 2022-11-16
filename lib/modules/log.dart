@@ -39,11 +39,11 @@ class Login extends StatelessWidget {
                     child: TextFormField(
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Email',
-                          hintText: 'Enter valid email id as abc@gmail.com'),
+                          labelText: 'UserName',
+                          hintText: 'Enter valid username'),
                       validator: (value){
                         if (value!.isEmpty){
-                          return "enter E-mail";
+                          return "enter UserName";
                         }
                       },
                       onChanged:(value) {
