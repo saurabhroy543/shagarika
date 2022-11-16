@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:shagarika/modules/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:shagarika/utils/app_pages.dart';
@@ -7,6 +8,7 @@ import 'package:get/get.dart';
 
 void main()async {
   await Storage.init();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MyApp());
 }
 
@@ -17,10 +19,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Flutter Demo',
+      title: 'Fintech Pool',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
+          colorScheme: ColorScheme.fromSwatch()
+              .copyWith(secondary:Colors.yellow),
       ),
       home:  const Splash(),
       getPages: AppPages.pages,
