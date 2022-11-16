@@ -14,27 +14,27 @@ class MyDashboard extends StatelessWidget {
     return GetBuilder<DashboardController>(
         init: DashboardController(),
         builder: (controller) {
-          return SafeArea(
-            child: Scaffold(
-              drawer: SideDrawer(),
-              appBar: AppBar(
-                title: const Text("Dashboard"),
-                backgroundColor: Colors.blue,
-                elevation: 0,
-                actions: [
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(() => const Profile(), transition: Transition.cupertino,duration:const Duration(seconds:1) );
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.only(right: 20),
-                      child: Icon(Icons.person),
-                    ),
-                  )
-                ],
+          return Scaffold(
+            drawer: SideDrawer(),
+            appBar: AppBar(
+              title: const Text("Dashboard"),
+              backgroundColor: Colors.blue,
+              elevation: 0,
+              actions: [
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => const Profile(), transition: Transition.cupertino,duration:const Duration(seconds:1) );
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.only(right: 20),
+                    child: Icon(Icons.person),
+                  ),
+                )
+              ],
 
-              ),
-              body: Padding(
+            ),
+            body:SafeArea(
+              child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: controller.isLoading.value
                     ? const Center(child: CircularProgressIndicator())
