@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shagarika/modules/profile.dart';
 import 'controllers/dashboard_controller.dart';
 import 'drawer.dart';
 import 'package:get/get.dart';
@@ -20,6 +21,18 @@ class MyDashboard extends StatelessWidget {
                 title: const Text("Dashboard"),
                 backgroundColor: Colors.blue,
                 elevation: 0,
+                actions: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => const Profile(), transition: Transition.cupertino,duration:const Duration(seconds:1) );
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.only(right: 20),
+                      child: Icon(Icons.person),
+                    ),
+                  )
+                ],
+
               ),
               body: Padding(
                 padding: const EdgeInsets.all(10.0),
