@@ -50,11 +50,15 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.cyan[100],
       appBar: AppBar(
+        backgroundColor: Colors.cyan[700],
         title: const Text("Redemption Request"),
-        backgroundColor: Colors.blue,
       ),
-      body: _uiWidget(),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Card(child: _uiWidget()),
+      ),
       drawer: SideDrawer(),
     );
   }
@@ -73,10 +77,10 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
                 "Select Investor",
                 nameId,
                 items,
-                    (onChanged) {
+                (onChanged) {
                   nameId = onChanged;
                 },
-                    (onValidate) {
+                (onValidate) {
                   if (onValidate == Null) {
                     return "please Select Client";
                   }
@@ -95,12 +99,12 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
                 "Select AMC",
                 AMCId,
                 AMC,
-                    (onChanged) {
+                (onChanged) {
                   setState(() {
                     AMCId = onChanged;
                   });
                 },
-                    (onValidate) {
+                (onValidate) {
                   if (onValidate == null) {
                     return "please Select Target Scheme";
                   }
@@ -119,12 +123,12 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
                 "Select Scheme",
                 schemeId,
                 scheme,
-                    (onChanged) {
+                (onChanged) {
                   setState(() {
                     schemeId = onChanged;
                   });
                 },
-                    (onValidate) {
+                (onValidate) {
                   if (onValidate == Null) {
                     return "please Select Scheme";
                   }
@@ -143,12 +147,12 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
                 "Select Folio Number",
                 folioId,
                 folioNo,
-                    (onChanged) {
+                (onChanged) {
                   setState(() {
                     folioId = onChanged;
                   });
                 },
-                    (onValidate) {
+                (onValidate) {
                   if (onValidate == Null) {
                     return "please select Folio Number";
                   }
@@ -164,113 +168,141 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
               const SizedBox(
                 height: 10,
               ),
-              Row(
-                children: [
-                  const Text(
-                    'Redeem By',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  Radio(
-                      value: 1,
-                      groupValue: redeemBy,
-                      onChanged: (onChanged) {
-                        setState(() {
-                          redeemBy = onChanged!;
-                        });
-                      }),
-                  const Text(
-                    'Amount',
-                    style: TextStyle(fontSize: 14),
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Row(
+                  children: [
+                    const Text(
+                      'Redeem By',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    Radio(
+                        value: 1,
+                        groupValue: redeemBy,
+                        onChanged: (onChanged) {
+                          setState(() {
+                            redeemBy = onChanged!;
+                          });
+                        }),
+                    const Text(
+                      'Amount',
+                      style: TextStyle(fontSize: 14),
+                    )
+                  ],
+                ),
               ),
-              Row(
-                children: [
-                  const SizedBox(width: 100,),
-                  Radio(
-                      value: 2,
-                      groupValue: redeemBy,
-                      onChanged: (onChanged) {
-                        setState(() {
-                          redeemBy = onChanged!;
-                        });
-                      }),
-                  const Text(
-                    'Unit',
-                    style: TextStyle(fontSize: 14),
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 100,
+                    ),
+                    Radio(
+                        value: 2,
+                        groupValue: redeemBy,
+                        onChanged: (onChanged) {
+                          setState(() {
+                            redeemBy = onChanged!;
+                          });
+                        }),
+                    const Text(
+                      'Unit',
+                      style: TextStyle(fontSize: 14),
+                    )
+                  ],
+                ),
               ),
-              Row(
-                children: [
-                  const SizedBox(width: 100,),
-                  Radio(
-                      value: 3,
-                      groupValue: redeemBy,
-                      onChanged: (onChanged) {
-                        setState(() {
-                          redeemBy = onChanged!;
-                        });
-                      }),
-                  const Text(
-                    'All Units',
-                    style: TextStyle(fontSize: 14),
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 100,
+                    ),
+                    Radio(
+                        value: 3,
+                        groupValue: redeemBy,
+                        onChanged: (onChanged) {
+                          setState(() {
+                            redeemBy = onChanged!;
+                          });
+                        }),
+                    const Text(
+                      'All Units',
+                      style: TextStyle(fontSize: 14),
+                    )
+                  ],
+                ),
               ),
-              Row(
-                children: const [
-                  Text(
-                    'Available Amount',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              TextFormField(
-                readOnly: true,
-                decoration: InputDecoration(
-                    hintText: availableAmount,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    )),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: const [
-                  Text(
-                    'Available Units',
-                    style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Row(
+                  children: const [
+                    Text(
+                      'Available Amount',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 10,
               ),
-              TextFormField(
-                readOnly: true,
-                decoration: InputDecoration(
-                    hintText: availableUnit,
-                    border: OutlineInputBorder(
-                      borderSide: const BorderSide(width: 2),
-                      borderRadius: BorderRadius.circular(5.0),
-                    )),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10),
+                child: TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                      hintText: availableAmount,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Row(
+                  children: const [
+                    Text(
+                      'Available Units',
+                      style:
+                          TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                child: TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                      hintText: availableUnit,
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 2),
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                ),
               ),
               FormHelper.inputFieldWidgetWithLabel(
                 context,
                 "Units to Redeem",
                 "Units to Redeem",
                 "",
-                    (onValidateval) {
+                (onValidateval) {
                   if (onValidateval.isEmpty) {
                     return "Can't be left empty";
                   }
                 },
-                    (onSaved) {},
+                (onSaved) {},
                 borderColor: Colors.black,
                 borderFocusColor: Colors.black,
                 borderRadius: 5,
@@ -283,12 +315,12 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
                 "Calculated Redemption Amount",
                 "Calculated Redemption Amount",
                 "",
-                    (onValidateval) {
+                (onValidateval) {
                   if (onValidateval.isEmpty) {
                     return "Can't be left empty";
                   }
                 },
-                    (onSaved) {},
+                (onSaved) {},
                 borderColor: Colors.black,
                 borderFocusColor: Colors.black,
                 borderRadius: 5,
@@ -302,13 +334,20 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
               Row(
                 children: [
                   ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.cyan[700],
+                      ),
                       onPressed: Fvalidate,
                       child: const Text("Submit Your Request")),
                   const SizedBox(
-                    width: 100,
+                    width: 50,
                   ),
                   ElevatedButton(
-                      onPressed: Fvalidate, child: const Text("Reset")),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.cyan[700],
+                      ),
+                      onPressed: Fvalidate,
+                      child: const Text("Reset")),
                 ],
               ),
             ],

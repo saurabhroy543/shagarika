@@ -75,7 +75,7 @@ class SideDrawer extends StatelessWidget {
                   ),
                 ),
                 const Divider(
-                  color: Colors.black54,
+                  color: Colors.black,
                   height: 2,
                   thickness: 0.8,
                 ),
@@ -184,7 +184,6 @@ class SideDrawer extends StatelessWidget {
                           text: 'Detail Holding Report',
                           onTap: () {
                             Get.to(() => const DetailedHoldingReport());
-                            Get.back();
                           }),
                       drawerOptions(
                           leading:

@@ -53,7 +53,7 @@ dev_dependencies:
 
   # state management
   get: ^4.1.4
-
+  encrypt: ^5.0.1
   flutter_screenutil: ^5.3.1
 
   #networking:

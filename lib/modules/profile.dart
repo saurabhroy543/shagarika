@@ -14,9 +14,11 @@ class Profile extends StatelessWidget {
       init: ProfileController(),
       builder: (controller) {
         return  Scaffold(
+          backgroundColor:  Colors.cyan[100],
             resizeToAvoidBottomInset: false,
             drawer: SideDrawer(),
             appBar: AppBar(
+              backgroundColor: Colors.cyan[700],
               title: const Text('Profile'),
             ),
             body: SafeArea(

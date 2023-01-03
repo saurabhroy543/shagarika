@@ -50,13 +50,16 @@ class _SwitchRequestState extends State<SwitchRequest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.cyan[100],
       appBar: AppBar(
+        backgroundColor: Colors.cyan[700],
         title: const Text("Switch Request"),
-        backgroundColor: Colors.blue,
       ),
-      body: _uiWidget(),
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Card(child: _uiWidget()),
+      ),
       drawer: SideDrawer(),
-
     );
   }
 
@@ -140,10 +143,10 @@ class _SwitchRequestState extends State<SwitchRequest> {
                 "Select Target Scheme",
                 targetSchemeId,
                 targetScheme,
-                    (onChanged) {
+                (onChanged) {
                   targetSchemeId = onChanged;
                 },
-                    (onValidate) {
+                (onValidate) {
                   if (onValidate == null) {
                     return "please Select Target Scheme";
                   }
@@ -159,29 +162,34 @@ class _SwitchRequestState extends State<SwitchRequest> {
               const SizedBox(
                 height: 10,
               ),
-              Row(
-                children: [
-                  const Text(
-                    'Switch By',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  Radio(
-                      value: 1,
-                      groupValue: switchBy,
-                      onChanged: (onChanged) {
-                        setState(() {
-                          switchBy = onChanged!;
-                        });
-                      }),
-                  const Text(
-                    'Amount',
-                    style: TextStyle(fontSize: 14),
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Row(
+                  children: [
+                    const Text(
+                      'Switch By',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    Radio(
+                        value: 1,
+                        groupValue: switchBy,
+                        onChanged: (onChanged) {
+                          setState(() {
+                            switchBy = onChanged!;
+                          });
+                        }),
+                    const Text(
+                      'Amount',
+                      style: TextStyle(fontSize: 14),
+                    )
+                  ],
+                ),
               ),
               Row(
                 children: [
-                  const SizedBox(width: 90,),
+                  const SizedBox(
+                    width: 90,
+                  ),
                   Radio(
                       value: 2,
                       groupValue: switchBy,
@@ -198,7 +206,9 @@ class _SwitchRequestState extends State<SwitchRequest> {
               ),
               Row(
                 children: [
-                  const SizedBox(width: 90,),
+                  const SizedBox(
+                    width: 90,
+                  ),
                   Radio(
                       value: 3,
                       groupValue: switchBy,
@@ -213,47 +223,59 @@ class _SwitchRequestState extends State<SwitchRequest> {
                   )
                 ],
               ),
-              Row(
-                children: const [
-                  Text(
-                    'Available Amount',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  children: const [
+                    Text(
+                      'Available Amount',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 10,
               ),
-              TextFormField(
-                readOnly: true,
-                decoration: InputDecoration(
-                    hintText: availableAmount,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    )),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0,right: 10.0),
+                child: TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                      hintText: availableAmount,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                ),
               ),
               const SizedBox(
                 height: 10,
               ),
-              Row(
-                children: const [
-                  Text(
-                    'Available Units',
-                    style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Row(
+                  children: const [
+                    Text(
+                      'Available Units',
+                      style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 10,
               ),
-              TextFormField(
-                readOnly: true,
-                decoration: InputDecoration(
-                    hintText: availableUnit,
-                    border: OutlineInputBorder(
-                      borderSide: const BorderSide(width: 2),
-                      borderRadius: BorderRadius.circular(5.0),
-                    )),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0,right: 10),
+                child: TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                      hintText: availableUnit,
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 2),
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                ),
               ),
               FormHelper.inputFieldWidgetWithLabel(
                 context,
@@ -297,12 +319,18 @@ class _SwitchRequestState extends State<SwitchRequest> {
               Row(
                 children: [
                   ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.cyan[700],
+                      ),
                       onPressed: Fvalidate,
                       child: const Text("Submit Your Request")),
                   const SizedBox(
-                    width: 100,
+                    width: 50,
                   ),
                   ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.cyan[700],
+                      ),
                       onPressed: Fvalidate, child: const Text("Reset")),
                 ],
               ),

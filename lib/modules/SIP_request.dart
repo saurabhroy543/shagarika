@@ -1,119 +1,94 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shagarika/utils/storage.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
-import 'package:intl/intl.dart';
-
+import 'controllers/sipRequestController.dart';
 import 'drawer.dart';
+import 'package:get/get.dart';
 
-class SIPrequest extends StatefulWidget {
+class SIPrequest extends StatelessWidget {
   const SIPrequest({Key? key}) : super(key: key);
 
   @override
-  _SIPrequestState createState() => _SIPrequestState();
-}
-
-class _SIPrequestState extends State<SIPrequest> {
-  GlobalKey<FormState> formkey = GlobalKey<FormState>();
-  var fromDate = DateTime.now();
-  var toDate = DateTime.now();
-  bool perpetualSIP = false;
-
-  getDate(String date) {
-    DateTime res = DateTime.parse(date);
-    return DateFormat('dd-MM-yyy').format(res).toString();
-  }
-
-  void Fvalidate() {
-    if (formkey.currentState!.validate()) {
-      print('ok');
-    } else {
-      print('error');
-    }
-  }
-
-  var minimumPurchase = "00";
-  var minimumAdditionalPurchase = '00';
-  String? nameId;
-  List<dynamic> name = [
-    {'id': 1, 'label': 'Rishi kumar'},
-  ];
-  var amcId;
-  List<dynamic> amc = [
-    {'id': 1, 'label1': 'AMC'},
-  ];
-  String? schemeId;
-  List<dynamic> scheme = [
-    {'id': 1, 'label': 'Scheme'},
-  ];
-  String? folioId;
-  List<dynamic> folioNo = [
-    {'id': 1, 'label': 'Folio Number'},
-  ];
-  String? SIPTypeId;
-  List<dynamic> SIPType = [
-    {'id': 1, 'label': 'SIP TYPES'},
-  ];
-  String? dividendId;
-  List<dynamic> dividend = [
-    {'id': 1, 'label': 'Dividend Payout'},
-    {'id': 2, 'label': 'Dividend Re-Investment'},
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("SIP Request"),
-        backgroundColor: Colors.blue,
-      ),
-      body: _uiWidget(),
-      drawer: SideDrawer(),
+    return GetBuilder<SipRequestController>(
+      init: SipRequestController(),
+      builder: (controller) {
+        return Scaffold(
+            backgroundColor: Colors.cyan[100],
+            appBar: AppBar(
+              backgroundColor: Colors.cyan[700],
+              title: const Text("SIP Request"),
+            ),
+            drawer: SideDrawer(),
+            body: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: controller.isLoading.value
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: () async {
+                        controller.isLoading(true);
+                        controller.onInit();
+                        controller.update();
+                        controller.isLoading(false);
+                      },
+                      child: Card(child: _uiWidget(controller, context)),
+                    ),
+            ));
+      },
     );
   }
 
-  Widget _uiWidget() {
+  Widget _uiWidget(controller, context) {
     return Form(
-      key: formkey,
+      key: controller.formkey,
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
-              FormHelper.dropDownWidgetWithLabel(
-                context,
-                "Investor Name",
-                "Select Investor Name",
-                nameId,
-                name,
-                (onChanged) {
-                  nameId = onChanged;
-                },
-                (onValidate) {
-                  if (onValidate == null) {
-                    return "please Select Investor";
-                  }
-                },
-                optionLabel: 'label',
-                optionValue: 'id',
-                borderColor: Colors.black,
-                borderFocusColor: Colors.black,
-                borderRadius: 5,
-                paddingLeft: 0,
-                paddingRight: 0,
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Row(
+                  children: const [
+                    Text(
+                      'Client Name',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10),
+                child: TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                      hintText: Storage.username,
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 2),
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                ),
               ),
               FormHelper.dropDownWidgetWithLabel(
                 context,
                 "AMC",
                 "Select AMC",
-                amcId,
-                amc,
+                controller.amcId,
+                controller.amc,
                 (onChanged) {
-                  amcId = onChanged;
+                  var data = controller.amc[int.parse(onChanged)];
+                  controller.isLoading(true);
+                  controller.amcId = data['label1'];
+                  controller.getschemelist(data['label1']);
+                  controller.update();
+                  controller.isLoading(false);
                 },
                 (onValidate) {
                   if (onValidate == null) {
@@ -121,7 +96,6 @@ class _SIPrequestState extends State<SIPrequest> {
                   }
                 },
                 optionLabel: 'label1',
-                optionValue: 'id',
                 borderColor: Colors.black,
                 borderFocusColor: Colors.black,
                 borderRadius: 5,
@@ -132,10 +106,17 @@ class _SIPrequestState extends State<SIPrequest> {
                 context,
                 "Select Scheme",
                 "Select Scheme",
-                schemeId,
-                scheme,
+                controller.schemeId,
+                controller.scheme,
                 (onChanged) {
-                  schemeId = onChanged;
+                  var data = controller.scheme[int.parse(onChanged)];
+                  controller.isLoading(true);
+                  controller.schemeId = int.parse(data['scheme_id']);
+                  controller.schemeName = data['label'];
+                  controller.getschemedetail(
+                      controller.amcId, controller.schemeId,controller.schemeName);
+                  controller.update();
+                  controller.isLoading(false);
                 },
                 (onValidate) {
                   if (onValidate == Null) {
@@ -154,14 +135,18 @@ class _SIPrequestState extends State<SIPrequest> {
                 context,
                 "Dividend",
                 "Select Dividend",
-                dividendId,
-                dividend,
+                controller.dividendId,
+                controller.dividend,
                 (onChanged) {
-                  dividendId = onChanged;
+                  var data = controller.dividend[int.parse(onChanged)];
+                  controller.isLoading(true);
+                  controller.dividendId = data['label'];
+                  controller.update();
+                  controller.isLoading(false);
                 },
                 (onValidate) {
                   if (onValidate == Null) {
-                    return "please Select Scheme";
+                    return "please Select Dividend";
                   }
                 },
                 optionLabel: 'label',
@@ -176,14 +161,18 @@ class _SIPrequestState extends State<SIPrequest> {
                 context,
                 "Folio Number",
                 "Select Folio Number",
-                folioId,
-                folioNo,
+                controller.folioId,
+                controller.folioNo,
                 (onChanged) {
-                  folioId = onChanged;
+                  var data = controller.folioNo[int.parse(onChanged)];
+                  controller.isLoading(true);
+                  controller.folioId = data['label'];
+                  controller.update();
+                  controller.isLoading(false);
                 },
                 (onValidate) {
                   if (onValidate == Null) {
-                    return "please Folio Number";
+                    return "please Select Folio Number";
                   }
                 },
                 optionLabel: 'label',
@@ -198,14 +187,18 @@ class _SIPrequestState extends State<SIPrequest> {
                 context,
                 "SIP Type",
                 "Select SIP Type",
-                SIPTypeId,
-                SIPType,
+                controller.SIPTypeId,
+                controller.SIPType,
                 (onChanged) {
-                  SIPTypeId = onChanged;
+                  var data = controller.SIPType[int.parse(onChanged)];
+                  controller.isLoading(true);
+                  controller.SIPTypeId = data['label'];
+                  controller.update();
+                  controller.isLoading(false);
                 },
                 (onValidate) {
                   if (onValidate == null) {
-                    return "please Select SIP";
+                    return "please Select SIP Type";
                   }
                 },
                 optionLabel: 'label',
@@ -219,84 +212,112 @@ class _SIPrequestState extends State<SIPrequest> {
               const SizedBox(
                 height: 10,
               ),
-              Row(
-                children: const [
-                  Text(
-                    'SIP Start Date',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              GestureDetector(
-                onTap: () async {
-                  fromDate = showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2050),
-                  ).then((value) {
-                    setState(() {
-                      fromDate = value!;
-                    });
-                  }) as DateTime;
-                  // controller.update();
-                },
-                child: Text(
-                  getDate(fromDate.toString()),
-                  style: const TextStyle(
-                    fontSize: 19,
-                  ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  children: const [
+                    Text(
+                      'SIP Start Date',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      width: 50,
+                    ),
+                    Text(
+                      'SIP End Date',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    )
+                  ],
                 ),
               ),
               const SizedBox(
                 height: 10,
               ),
-              Row(
-                children: const [
-                  Text(
-                    'SIP End Date',
-                    style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        controller.fromDate = showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2050),
+                        ).then((value) {
+                          controller.fromDate = value!;
+                          controller.update();
+                        }) as DateTime;
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(13.0),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                              color: Colors.black,
+                            )),
+                        child: Text(
+                          controller.getDate(controller.fromDate.toString()),
+                          style:
+                              const TextStyle(fontSize: 16, color: Colors.blue),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 50,
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        controller.toDate = showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2050),
+                        ).then((value) {
+                          controller.toDate = value!;
+                          controller.update();
+                        }) as DateTime;
+
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(13.0),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                              color: Colors.black,
+                            )),
+                        child: Text(
+                          controller.getDate(controller.toDate.toString()),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 10,
-              ),
-              GestureDetector(
-                onTap: () async {
-                  toDate = showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2050),
-                  ).then((value) {
-                    setState(() {
-                      toDate = value!;
-                    });
-                  }) as DateTime;
-                  // controller.update();
-                },
-                child: Text(
-                  getDate(toDate.toString()),
-                  style: const TextStyle(
-                    fontSize: 19,
-                  ),
-                ),
               ),
               Row(
                 children: [
                   Checkbox(
-                    value: perpetualSIP,
+                    value: controller.perpetualSIP,
                     onChanged: (newBool) {
-                      setState(() {
-                        perpetualSIP = newBool!;
-                      });
+                      controller.perpetualSIP = newBool!;
+                      controller.update();
                     },
                   ),
-                  const Text("Perpetual SIP",style: TextStyle(fontSize: 15),)
+                  const Text(
+                    "Perpetual SIP",
+                    style: TextStyle(fontSize: 15),
+                  )
                 ],
               ),
               FormHelper.inputFieldWidgetWithLabel(
@@ -307,6 +328,9 @@ class _SIPrequestState extends State<SIPrequest> {
                 (onValidateval) {
                   if (onValidateval.isEmpty) {
                     return "Can't be left empty";
+                  }else{
+                    controller.amount=int.parse(onValidateval);
+                    controller.update();
                   }
                 },
                 (onSaved) {},
@@ -323,13 +347,24 @@ class _SIPrequestState extends State<SIPrequest> {
               Row(
                 children: [
                   ElevatedButton(
-                      onPressed: Fvalidate,
+                      onPressed: controller.formValidate,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.cyan[700],
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30.0, vertical: 15.0),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0)),
+                      ),
                       child: const Text("Submit Your Request")),
                   const SizedBox(
-                    width: 100,
+                    width: 50,
                   ),
                   ElevatedButton(
-                      onPressed: Fvalidate, child: const Text("Reset")),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.cyan[700],
+                      ),
+                      onPressed: controller.Reset,
+                      child: const Text("Reset")),
                 ],
               ),
             ],

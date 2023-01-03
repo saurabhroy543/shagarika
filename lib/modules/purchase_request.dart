@@ -1,100 +1,95 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shagarika/utils/storage.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
+import 'package:get/get.dart';
 
+import 'controllers/purchase_request_controller.dart';
 import 'drawer.dart';
 
-class PurchaseRequest extends StatefulWidget {
+class PurchaseRequest extends StatelessWidget {
   const PurchaseRequest({Key? key}) : super(key: key);
 
   @override
-  _PurchaseRequestState createState() => _PurchaseRequestState();
-}
-
-class _PurchaseRequestState extends State<PurchaseRequest> {
-  GlobalKey<FormState> formkey = GlobalKey<FormState>();
-
-  void Fvalidate() {
-    if (formkey.currentState!.validate()) {
-      print('ok');
-    } else {
-      print('error');
-    }
-  }
-  var minimumPurchase="00";
-  var minimumAdditionalPurchase='00';
-  String? nameId;
-  List<dynamic> items = [
-    {'id': 1, 'label': 'Rishi kumar'},
-  ];
-  var amcId;
-  List<dynamic> amc = [
-    {'id': 1, 'label1': 'AMC'},
-  ];
-  String? schemeId;
-  List<dynamic> scheme = [
-    {'id': 1, 'label': 'Scheme'},
-  ];
-  String? folioId;
-  List<dynamic> folioNo = [
-    {'id': 1, 'label': 'Folio Number'},
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Purchase Request"),
-        backgroundColor: Colors.blue,
-      ),
-      drawer: SideDrawer(),
-      body: _uiWidget(),
+    return GetBuilder<PurchaseRequestController>(
+      init: PurchaseRequestController(),
+      builder: (controller) {
+        return Scaffold(
+            backgroundColor: Colors.cyan[100],
+            appBar: AppBar(
+              title: const Text("Purchase Request"),
+              backgroundColor: Colors.cyan[700],
+            ),
+            drawer: SideDrawer(),
+            body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: controller.isLoading.value
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: () async {
+                        controller.isLoading(true);
+                        controller.onInit();
+                        controller.update();
+                        controller.isLoading(false);
+                      },
+                      child: Card(child: _uiWidget(controller, context)),
+                    ),
+            ));
+      },
     );
   }
 
-  Widget _uiWidget() {
+  Widget _uiWidget(controller, context) {
     return Form(
-      key: formkey,
+      key: controller.formkey,
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
-              FormHelper.dropDownWidgetWithLabel(
-                context,
-                "Client Name",
-                "Select Client",
-                nameId,
-                items,
-                (onChanged) {
-                  nameId = onChanged;
-                },
-                (onValidate) {
-                  if (onValidate == Null) {
-                    return "please Select Client";
-                  }
-                },
-                optionLabel: 'label',
-                optionValue: 'id',
-                borderColor: Colors.black,
-                borderFocusColor: Colors.black,
-                borderRadius: 5,
-                paddingLeft: 0,
-                paddingRight: 0,
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Row(
+                  children: const [
+                    Text(
+                      'Client Name',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10),
+                child: TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                      hintText: Storage.username,
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 2),
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                ),
               ),
               FormHelper.dropDownWidgetWithLabel(
                 context,
                 "AMC",
                 "Select AMC",
-                amcId,
-                amc,
+                controller.amcId,
+                controller.amc,
                 (onChanged) {
-                  amcId = onChanged;
+                  var data = controller.amc[int.parse(onChanged)];
+                  controller.isLoading(true);
+                  controller.amcId = data['label1'];
+                  controller.getschemelist(data['label1']);
+                  controller.update();
+                  controller.isLoading(false);
                 },
                 (onValidate) {
                   if (onValidate == null) {
@@ -102,7 +97,6 @@ class _PurchaseRequestState extends State<PurchaseRequest> {
                   }
                 },
                 optionLabel: 'label1',
-                optionValue: 'id',
                 borderColor: Colors.black,
                 borderFocusColor: Colors.black,
                 borderRadius: 5,
@@ -113,10 +107,17 @@ class _PurchaseRequestState extends State<PurchaseRequest> {
                 context,
                 "Select Scheme",
                 "Select Scheme",
-                schemeId,
-                scheme,
+                controller.schemeId,
+                controller.scheme,
                 (onChanged) {
-                  schemeId = onChanged;
+                  var data = controller.scheme[int.parse(onChanged)];
+                  controller.isLoading(true);
+                  controller.schemeId = int.parse(data['scheme_id']);
+                  controller.schemeName = data['label'];
+                  controller.getschemedetail(
+                      controller.amcId, controller.schemeId,controller.schemeName);
+                  controller.update();
+                  controller.isLoading(false);
                 },
                 (onValidate) {
                   if (onValidate == Null) {
@@ -135,14 +136,16 @@ class _PurchaseRequestState extends State<PurchaseRequest> {
                 context,
                 "Folio Number",
                 "Select Folio Number",
-                folioId,
-                folioNo,
+                controller.folioId,
+                controller.folioNo,
                 (onChanged) {
-                  folioId = onChanged;
+                  var data = controller.folioNo[int.parse(onChanged)];
+                  controller.folioId = data['label'];
+                  controller.update();
                 },
                 (onValidate) {
                   if (onValidate == Null) {
-                    return "please Folio Number";
+                    return "please select Folio Number";
                   }
                 },
                 optionLabel: 'label',
@@ -156,50 +159,81 @@ class _PurchaseRequestState extends State<PurchaseRequest> {
               const SizedBox(
                 height: 10,
               ),
-              Row(
-                children: const [
-                  Text(
-                    'Minimum Purchase Amount',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Row(
+                  children: const [
+                    Text(
+                      'Min Purchase Amount',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
               ),
-              const SizedBox(height: 10,),
-              TextFormField(
-                readOnly: true,
-                decoration: InputDecoration(
-                    hintText: minimumPurchase,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    )),
+              const SizedBox(
+                height: 10,
               ),
-              const SizedBox(height: 10,),
-              Row(
-                children: const [
-                  Text(
-                    'Minimum Additional Purchase Amount',
-                    style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-                  )
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10),
+                child: TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                      hintText: controller.minimumPurchase,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                ),
               ),
-              const SizedBox(height: 10,),
-              TextFormField(
-                readOnly: true,
-                decoration: InputDecoration(
-                    hintText: minimumAdditionalPurchase,
-                    border: OutlineInputBorder(
-                      borderSide:  const BorderSide(width: 2),
-                      borderRadius: BorderRadius.circular(5.0),
-                    )),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Row(
+                  children: const [
+                    Text(
+                      'Min Additional Purchase Amount',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10),
+                child: TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                      hintText: controller.minimumAdditionalPurchase,
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 2),
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                ),
               ),
               FormHelper.inputFieldWidgetWithLabel(
                 context,
                 "Amount To be Invested",
                 "Amount To be Invested",
                 "00",
-                (onValidateval) {
-                  if (onValidateval.isEmpty) {
+                (onValidate) {
+                  if (onValidate.isEmpty) {
                     return "Can't be left empty";
+                  } else {
+                    if (int.parse(onValidate) <
+                        int.parse(controller.minimumPurchase)) {
+                      return "Amount is low";
+                    }
+                    if (int.parse(onValidate) >
+                        int.parse(controller.minimumPurchase)) {
+                      controller.amount = int.parse(onValidate);
+                      controller.update();
+                    }
+                    ;
                   }
                 },
                 (onSaved) {},
@@ -213,17 +247,34 @@ class _PurchaseRequestState extends State<PurchaseRequest> {
               const SizedBox(
                 height: 10,
               ),
-              Row(
-                children: [
-                  ElevatedButton(
-                      onPressed: Fvalidate,
-                      child: const Text("Submit Your Request")),
-                  const SizedBox(
-                    width: 100,
-                  ),
-                  ElevatedButton(
-                      onPressed: Fvalidate, child: const Text("Reset")),
-                ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    ElevatedButton(
+                        onPressed: controller.Fvalidate,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.cyan[700],
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30.0, vertical: 15.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0)),
+                        ),
+                        child: const Text("Submit Your Request")),
+                    const SizedBox(
+                      width: 50,
+                    ),
+                    ElevatedButton(
+                        onPressed: controller.Reset,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.cyan[700],
+                        ),
+                        child: const Text("Reset")),
+                    const SizedBox(
+                      width: 40,
+                    )
+                  ],
+                ),
               ),
             ],
           ),

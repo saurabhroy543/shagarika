@@ -29,10 +29,11 @@ class DashboardController extends GetxController {
   @override
   void onInit() async {
     await gettAmcDetail();
-    await getAmcMapData();
     await getSummaryAmount();
+    await getAmcMapData();
     update();
     isLoading(false);
+
     super.onInit();
   }
 

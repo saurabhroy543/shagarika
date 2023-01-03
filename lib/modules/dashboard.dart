@@ -5,25 +5,30 @@ import 'controllers/dashboard_controller.dart';
 import 'drawer.dart';
 import 'package:get/get.dart';
 import 'package:pie_chart/pie_chart.dart';
-import 'package:shagarika/utils/storage.dart';
+
 class MyDashboard extends StatelessWidget {
   const MyDashboard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    double widthS = MediaQuery.of(context).size.width;
+
     return GetBuilder<DashboardController>(
         init: DashboardController(),
         builder: (controller) {
           return Scaffold(
+            backgroundColor: Colors.cyan[100],
             drawer: SideDrawer(),
             appBar: AppBar(
               title: const Text("Dashboard"),
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.cyan[700],
               elevation: 0,
               actions: [
                 GestureDetector(
                   onTap: () {
-                    Get.to(() => const Profile(), transition: Transition.cupertino,duration:const Duration(seconds:1) );
+                    Get.to(() => const Profile(),
+                        transition: Transition.cupertino,
+                        duration: const Duration(seconds: 1));
                   },
                   child: const Padding(
                     padding: EdgeInsets.only(right: 20),
@@ -31,9 +36,8 @@ class MyDashboard extends StatelessWidget {
                   ),
                 )
               ],
-
             ),
-            body:SafeArea(
+            body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: controller.isLoading.value
@@ -48,34 +52,37 @@ class MyDashboard extends StatelessWidget {
                         child: SingleChildScrollView(
                             child: Column(
                           children: [
-                             Center(
-                              child: Text.rich(TextSpan(children: [
-                                const TextSpan(
-                                    text: 'Welcome ',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black)),
-                                TextSpan(
-                                    text: '${Storage.username}',
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.blue)),
-                              ])),
-                            ),
+                            //  Center(
+                            //   child: Text.rich(TextSpan(children: [
+                            //     const TextSpan(
+                            //         text: 'Welcome ',
+                            //         style: TextStyle(
+                            //             fontSize: 16,
+                            //             fontWeight: FontWeight.w500,
+                            //             color: Colors.black)),
+                            //     TextSpan(
+                            //         text: '${Storage.username}',
+                            //         style: const TextStyle(
+                            //             fontSize: 16,
+                            //             fontWeight: FontWeight.w600,
+                            //             color: Colors.white)),
+                            //   ])),
+                            // ),
                             leaveCard(controller),
                             assetChart(controller, context),
                             amcChart(controller, context),
                             Row(
                               children: [
-                                detailCard('No. of Active SIP', 2),
-                                detailCard('Your SIP', 4000),
+                                Expanded(
+                                    child: detailCard('No. of Active SIP', 2)),
+                                Expanded(child: detailCard('Your SIP', 4000)),
                               ],
                             ),
                             Row(
                               children: [
-                                detailCard('Lumpsum Investment', 11999),
+                                Expanded(
+                                    child: longDetailCard(
+                                        'Lumpsum Investment', 11999, widthS)),
                               ],
                             )
                           ],
@@ -89,6 +96,7 @@ class MyDashboard extends StatelessWidget {
 
   Widget amcChart(DashboardController controller, BuildContext context) {
     return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       elevation: 3,
       child: Padding(
           padding: const EdgeInsets.all(20),
@@ -144,6 +152,7 @@ class MyDashboard extends StatelessWidget {
 
   Widget assetChart(DashboardController controller, BuildContext context) {
     return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       elevation: 3,
       child: Padding(
           padding: const EdgeInsets.all(20),
@@ -197,6 +206,7 @@ class MyDashboard extends StatelessWidget {
 
   Widget leaveCard(DashboardController controller) {
     return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       elevation: 3,
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -228,7 +238,7 @@ class MyDashboard extends StatelessWidget {
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: controller.summaryName.length,
                           itemBuilder: (context, index) {
-                            return  Text(controller.summaryName[index],
+                            return Text(controller.summaryName[index],
                                 style: const TextStyle(
                                     fontWeight: FontWeight.normal,
                                     fontSize: 15,
@@ -247,7 +257,8 @@ class MyDashboard extends StatelessWidget {
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: controller.summaryAmount.length,
                           itemBuilder: (context, index) {
-                            return  Text(controller.summaryAmount[index].toString(),
+                            return Text(
+                                controller.summaryAmount[index].toString(),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 15,
@@ -266,11 +277,43 @@ class MyDashboard extends StatelessWidget {
 
   Widget detailCard(String title, int amount) {
     return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       elevation: 4,
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: SizedBox(
           width: 140,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w700, color: Colors.blue),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text("$amount")
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget longDetailCard(String title, int amount, double widthS) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: SizedBox(
+          width: widthS,
           child: Column(
             children: [
               Row(

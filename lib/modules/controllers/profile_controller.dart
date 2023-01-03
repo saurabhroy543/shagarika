@@ -17,7 +17,7 @@ class ProfileController extends GetxController {
   }
 
   Future getUserDetail() async {
-    userDetailModel = await userDetailRepo.fetchDetail(Storage.userId);
+    userDetailModel = await userDetailRepo.fetchProfileDetail(Storage.userId);
     update();
   }
 }

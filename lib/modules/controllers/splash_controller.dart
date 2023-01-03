@@ -8,7 +8,7 @@ class SplashController extends GetxController {
     if (AppUtils.isLoggedIn()) {
       Future.delayed(
         const Duration(seconds: 3),
-        () => Get.offNamed(Routes.dashboard),
+        () => Get.offNamed(Routes.home),
       );
     } else {
       Future.delayed(
