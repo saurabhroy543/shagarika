@@ -2,6 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shagarika/modules/profile.dart';
 import 'package:get/get.dart';
+import 'package:shagarika/modules/purchase_request.dart';
+import 'package:shagarika/modules/switch_request.dart';
+import '../utils/app_pages.dart';
+import 'Detail_holding report.dart';
+import 'Redeemption_request.dart';
+import 'SIP_request.dart';
 import 'drawer.dart';
 
 class Home extends StatelessWidget {
@@ -40,7 +46,9 @@ class Home extends StatelessWidget {
                 crossAxisCount: 2),
             children: <Widget>[
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Get.toNamed(Routes.dashboard);
+                },
                 child: Container(
                   color: primaryGrey,
                   margin: const EdgeInsets.all(5),
@@ -66,7 +74,9 @@ class Home extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Get.to(() => const PurchaseRequest());
+                },
                 child: Container(
                   color: primaryGrey,
                   margin: const EdgeInsets.all(5),
@@ -92,7 +102,9 @@ class Home extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Get.to(() => const SIPrequest());
+                },
                 child: Container(
                   color: primaryGrey,
                   margin: const EdgeInsets.all(5),
@@ -118,7 +130,9 @@ class Home extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Get.to(() => const SwitchRequest());
+                },
                 child: Container(
                   color: primaryGrey,
                   margin: const EdgeInsets.all(5),
@@ -144,7 +158,9 @@ class Home extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Get.to(() => const RedemptionRequest());
+                },
                 child: Container(
                   color: primaryGrey,
                   margin: const EdgeInsets.all(5),
@@ -196,7 +212,9 @@ class Home extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Get.to(() => const DetailedHoldingReport());
+                },
                 child: Container(
                   color: primaryGrey,
                   margin: const EdgeInsets.all(5),
@@ -224,7 +242,9 @@ class Home extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Get.toNamed(Routes.changePassword);
+                },
                 child: Container(
                   color: primaryGrey,
                   margin: const EdgeInsets.all(5),
@@ -236,7 +256,7 @@ class Home extends StatelessWidget {
                             child: Icon(
                               CupertinoIcons.lock_fill,
                               size: 50,
-                              semanticLabel: "Portfolio",
+                              semanticLabel: "Change Password",
                               color: Colors.blue,
                             )),
                         SizedBox(
