@@ -35,11 +35,11 @@ class Storage {
   static set domainname(String value) =>
       box?.write(StorageKeys.domainName, value);
 
-  // is Employee
-  static bool? get isEmployee => box?.read(StorageKeys.isEmployee);
+  // is MPIN
+  static String get MPIN => box?.read(StorageKeys.MPIN);
 
-  static set isEmployee(bool? value) =>
-      box?.write(StorageKeys.isEmployee, value);
+  static set MPIN(String value) =>
+      box?.write(StorageKeys.MPIN, value);
 
   // is Approval
   static bool? get isApproval => box?.read(StorageKeys.isApproval);
@@ -56,7 +56,7 @@ class Storage {
   static clear() {
     box?.remove(StorageKeys.isSuperuser);
     box?.remove(StorageKeys.domainName);
-    box?.remove(StorageKeys.isEmployee);
+    box?.remove(StorageKeys.MPIN);
     box?.remove(StorageKeys.isApproval);
     box?.remove(StorageKeys.token);
     box?.remove(StorageKeys.userId);

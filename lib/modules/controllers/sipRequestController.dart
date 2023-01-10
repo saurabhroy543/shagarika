@@ -30,8 +30,7 @@ class SipRequestController extends GetxController {
 
   void formValidate() {
     if (!formkey.currentState!.validate()) {
-    }
-    else{
+    } else {
       var request = {
         "client name": Storage.username,
         "amc": amcId,
@@ -86,8 +85,8 @@ class SipRequestController extends GetxController {
   ];
   String? dividendId;
   List<dynamic> dividend = [
-    {'id': 1, 'label': 'Dividend Payout'},
-    {'id': 2, 'label': 'Dividend Re-Investment'},
+    {'id': 0, 'label': 'Dividend Payout'},
+    {'id': 1, 'label': 'Dividend Re-Investment'},
   ];
   var amount = 00;
 

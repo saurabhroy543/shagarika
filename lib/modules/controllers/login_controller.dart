@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shagarika/data/repositories/user_repo.dart';
+import 'package:shagarika/modules/pincode.dart';
 import '../../data/models/user_model.dart';
 import 'package:shagarika/utils/storage.dart';
 
 import '../../utils/Network_requester.dart';
-import '../../utils/app_pages.dart';
 
 class LoginController extends GetxController {
   String username = '';
@@ -19,7 +19,7 @@ class LoginController extends GetxController {
     if (formKey.currentState!.validate()) {
       EasyLoading.show(status: 'Loading');
       await Future.delayed(const Duration(
-        seconds: 5,
+        seconds: 3,
       )).then((value) => EasyLoading.dismiss());
       UserModel response = await userRepo.userLogin(usernameFilled, password);
       if (response.errorCode == 0) {
@@ -27,7 +27,7 @@ class LoginController extends GetxController {
         Storage.username = response.user_detail?.name.toString() ?? "";
         NetworkRequester.shared.prepareRequest();
         EasyLoading.dismiss();
-        Get.offNamed(Routes.dashboard);
+        Get.off(const SetPin());
       } else {
         EasyLoading.showToast('${response.msg}');
       }

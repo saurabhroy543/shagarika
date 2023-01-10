@@ -9,4 +9,5 @@ class AppUtils {
   }
 
   static bool isLoggedIn() => Storage.userId != null && Storage.userId != "";
+  static bool isPinSet() => Storage.MPIN != null && Storage.MPIN != "";
 }
