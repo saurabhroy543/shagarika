@@ -12,4 +12,12 @@ class UserRepository {
     var data = json.decode(response);
     return UserModel.fromJson(data);
   }
+
+  Future<EncryptModel> encrypt(String word) async {
+    var body = {'data': word};
+    var response = await NetworkRequester.shared.post(path: ApiPaths.encrpytData,data:body);
+    var data = json.decode(response);
+    return EncryptModel.fromJson(data);
+  }
+
 }

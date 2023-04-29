@@ -21,13 +21,16 @@ class LoginController extends GetxController {
       await Future.delayed(const Duration(
         seconds: 3,
       )).then((value) => EasyLoading.dismiss());
-      UserModel response = await userRepo.userLogin(usernameFilled, password);
+      EncryptModel encrypt_response = await userRepo.encrypt(password);
+      var enc_password = encrypt_response.encryptedData!;
+      UserModel response = await userRepo.userLogin(usernameFilled, enc_password);
       if (response.errorCode == 0) {
         Storage.userId = response.user_detail?.userId.toString() ?? "";
         Storage.username = response.user_detail?.name.toString() ?? "";
+        Storage.pan = response.user_detail?.pan.toString() ?? "";
         NetworkRequester.shared.prepareRequest();
         EasyLoading.dismiss();
-        Get.off(const SetPin());
+        Get.off(() => const SetPin());
       } else {
         EasyLoading.showToast('${response.msg}');
       }

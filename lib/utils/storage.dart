@@ -29,6 +29,11 @@ class Storage {
 
   static set username(String? value) => box?.write(StorageKeys.username, value);
 
+ // User PAN
+  static String? get pan => box?.read(StorageKeys.pan);
+
+  static set pan(String? value) => box?.write(StorageKeys.pan, value);
+
   // Domain name
   static String get domainname => box?.read(StorageKeys.domainName);
 
@@ -61,6 +66,7 @@ class Storage {
     box?.remove(StorageKeys.token);
     box?.remove(StorageKeys.userId);
     box?.remove(StorageKeys.username);
+    box?.remove(StorageKeys.pan);
     box?.erase();
     NetworkRequester.shared.prepareRequest();
   }

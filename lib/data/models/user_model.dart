@@ -55,3 +55,20 @@ class UserDetail {
     return data;
   }
 }
+
+
+class EncryptModel {
+  String? encryptedData;
+
+  EncryptModel({this.encryptedData});
+
+  EncryptModel.fromJson(Map<String, dynamic> json) {
+    encryptedData = json['encrypted_data'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['encrypted_data'] = encryptedData;
+    return data;
+  }
+}
