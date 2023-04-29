@@ -1,108 +1,90 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shagarika/utils/storage.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
+import 'package:get/get.dart';
 
+import 'controllers/RedeemptionController.dart';
 import 'drawer.dart';
 
-class RedemptionRequest extends StatefulWidget {
+class RedemptionRequest extends StatelessWidget {
   const RedemptionRequest({Key? key}) : super(key: key);
 
   @override
-  _RedemptionRequestState createState() => _RedemptionRequestState();
-}
-
-class _RedemptionRequestState extends State<RedemptionRequest> {
-  GlobalKey<FormState> formkey = GlobalKey<FormState>();
-
-  void Fvalidate() {
-    if (formkey.currentState!.validate()) {
-      print('ok');
-    } else {
-      print('error');
-    }
-  }
-
-  var availableAmount;
-  var availableUnit;
-  int redeemBy = 1;
-  String? nameId;
-  List<dynamic> items = [
-    {'id': 1, 'label': 'Rishi kumar'},
-  ];
-  var AMCId;
-  List<dynamic> AMC = [
-    {'id': 1, 'label': 'Target Scheme'},
-  ];
-  String? schemeId;
-  List<dynamic> scheme = [
-    {'id': 1, 'label': 'Scheme'},
-  ];
-  String? folioId;
-  List<dynamic> folioNo = [
-    {'id': 1, 'label': 'Folio Number'},
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.cyan[100],
-      appBar: AppBar(
-        backgroundColor: Colors.cyan[700],
-        title: const Text("Redemption Request"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Card(child: _uiWidget()),
-      ),
-      drawer: SideDrawer(),
+    return GetBuilder<RedeemptionController>(
+      init: RedeemptionController(),
+      builder: (controller) {
+        return Scaffold(
+            backgroundColor: Colors.cyan[100],
+            appBar: AppBar(
+              backgroundColor: Colors.cyan[700],
+              title: const Text("Redemption Request"),
+            ),
+            drawer: SideDrawer(),
+            body: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: controller.isLoading.value
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: () async {
+                        controller.isLoading(true);
+                        controller.onInit();
+                        controller.update();
+                        controller.isLoading(false);
+                      },
+                      child: Card(child: _uiWidget(controller, context)),
+                    ),
+            ));
+      },
     );
   }
 
-  Widget _uiWidget() {
+  Widget _uiWidget(controller, context) {
     return Form(
-      key: formkey,
+      key: controller.formkey,
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
-              FormHelper.dropDownWidgetWithLabel(
-                context,
-                "Investor Name",
-                "Select Investor",
-                nameId,
-                items,
-                (onChanged) {
-                  nameId = onChanged;
-                },
-                (onValidate) {
-                  if (onValidate == Null) {
-                    return "please Select Client";
-                  }
-                },
-                optionLabel: 'label',
-                optionValue: 'id',
-                borderColor: Colors.black,
-                borderFocusColor: Colors.black,
-                borderRadius: 5,
-                paddingLeft: 0,
-                paddingRight: 0,
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Row(
+                  children: const [
+                    Text(
+                      'Client Name',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10),
+                child: TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                      hintText: Storage.username,
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 2),
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                ),
               ),
               FormHelper.dropDownWidgetWithLabel(
                 context,
                 "Select AMC",
                 "Select AMC",
-                AMCId,
-                AMC,
+                controller.AMCId,
+                controller.AMC,
                 (onChanged) {
-                  setState(() {
-                    AMCId = onChanged;
-                  });
+                  controller.AMCId = onChanged;
                 },
                 (onValidate) {
                   if (onValidate == null) {
@@ -121,12 +103,10 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
                 context,
                 "Select Scheme",
                 "Select Scheme",
-                schemeId,
-                scheme,
+                controller.schemeId,
+                controller.scheme,
                 (onChanged) {
-                  setState(() {
-                    schemeId = onChanged;
-                  });
+                  controller.schemeId = onChanged;
                 },
                 (onValidate) {
                   if (onValidate == Null) {
@@ -145,12 +125,10 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
                 context,
                 "Folio Number",
                 "Select Folio Number",
-                folioId,
-                folioNo,
+                controller.folioId,
+                controller.folioNo,
                 (onChanged) {
-                  setState(() {
-                    folioId = onChanged;
-                  });
+                  controller.folioId = onChanged;
                 },
                 (onValidate) {
                   if (onValidate == Null) {
@@ -178,12 +156,11 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     Radio(
-                        value: 1,
-                        groupValue: redeemBy,
+                        value: 'amount',
+                        groupValue: controller.redeemBy,
                         onChanged: (onChanged) {
-                          setState(() {
-                            redeemBy = onChanged!;
-                          });
+                          controller.redeemBy = onChanged!;
+                          controller.update();
                         }),
                     const Text(
                       'Amount',
@@ -200,12 +177,11 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
                       width: 100,
                     ),
                     Radio(
-                        value: 2,
-                        groupValue: redeemBy,
+                        value: 'unit',
+                        groupValue: controller.redeemBy,
                         onChanged: (onChanged) {
-                          setState(() {
-                            redeemBy = onChanged!;
-                          });
+                          controller.redeemBy = onChanged!;
+                          controller.update();
                         }),
                     const Text(
                       'Unit',
@@ -222,12 +198,11 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
                       width: 100,
                     ),
                     Radio(
-                        value: 3,
-                        groupValue: redeemBy,
+                        value: 'all unit',
+                        groupValue: controller.redeemBy,
                         onChanged: (onChanged) {
-                          setState(() {
-                            redeemBy = onChanged!;
-                          });
+                          controller.redeemBy = onChanged!;
+                          controller.update();
                         }),
                     const Text(
                       'All Units',
@@ -256,7 +231,7 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
                 child: TextFormField(
                   readOnly: true,
                   decoration: InputDecoration(
-                      hintText: availableAmount,
+                      hintText: controller.availableAmount,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       )),
@@ -285,7 +260,7 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
                 child: TextFormField(
                   readOnly: true,
                   decoration: InputDecoration(
-                      hintText: availableUnit,
+                      hintText: controller.availableUnit,
                       border: OutlineInputBorder(
                         borderSide: const BorderSide(width: 2),
                         borderRadius: BorderRadius.circular(5.0),
@@ -332,22 +307,41 @@ class _RedemptionRequestState extends State<RedemptionRequest> {
                 height: 10,
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.cyan[700],
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        onPressed: controller.Fvalidate,
+                        child: const Text("Submit Your Request"),
                       ),
-                      onPressed: Fvalidate,
-                      child: const Text("Submit Your Request")),
-                  const SizedBox(
-                    width: 50,
+                    ),
                   ),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.cyan[700],
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red[900],
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        onPressed: controller.Reset,
+                        child: const Text("Reset"),
                       ),
-                      onPressed: Fvalidate,
-                      child: const Text("Reset")),
+                    ),
+                  ),
                 ],
               ),
             ],

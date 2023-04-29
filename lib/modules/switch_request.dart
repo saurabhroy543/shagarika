@@ -1,106 +1,94 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shagarika/utils/storage.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
-
+import 'controllers/switchRequestController.dart';
 import 'drawer.dart';
+import 'package:get/get.dart';
 
-class SwitchRequest extends StatefulWidget {
+class SwitchRequest extends StatelessWidget {
   const SwitchRequest({Key? key}) : super(key: key);
 
   @override
-  _SwitchRequestState createState() => _SwitchRequestState();
-}
-
-class _SwitchRequestState extends State<SwitchRequest> {
-  GlobalKey<FormState> formkey = GlobalKey<FormState>();
-
-  void Fvalidate() {
-    if (formkey.currentState!.validate()) {
-      print('ok');
-    } else {
-      print('error');
-    }
-  }
-
-  var availableAmount;
-  var availableUnit;
-  int switchBy = 1;
-  String? nameId;
-  List<dynamic> items = [
-    {'id': 1, 'label': 'Rishi kumar'},
-  ];
-  var targetSchemeId;
-  List<dynamic> targetScheme = [
-    {'id': 1, 'label': 'Target Scheme'},
-  ];
-  String? schemeId;
-  List<dynamic> scheme = [
-    {'id': 1, 'label': 'Scheme'},
-  ];
-  String? folioId;
-  List<dynamic> folioNo = [
-    {'id': 1, 'label': 'Folio Number'},
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.cyan[100],
-      appBar: AppBar(
-        backgroundColor: Colors.cyan[700],
-        title: const Text("Switch Request"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Card(child: _uiWidget()),
-      ),
-      drawer: SideDrawer(),
+    return GetBuilder<switchRequestController>(
+      init: switchRequestController(),
+      builder: (controller) {
+        return Scaffold(
+            backgroundColor: Colors.cyan[100],
+            appBar: AppBar(
+              backgroundColor: Colors.cyan[700],
+              title: const Text("Switch Request"),
+            ),
+            drawer: SideDrawer(),
+            body: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: controller.isLoading.value
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: () async {
+                        controller.isLoading(true);
+                        controller.onInit();
+                        controller.update();
+                        controller.isLoading(false);
+                      },
+                      child: Card(child: _uiWidget(controller, context)),
+                    ),
+            ));
+      },
     );
   }
 
-  Widget _uiWidget() {
+  Widget _uiWidget(controller, context) {
     return Form(
-      key: formkey,
+      key: controller.formkey,
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
-              FormHelper.dropDownWidgetWithLabel(
-                context,
-                "Client Name",
-                "Select Client",
-                nameId,
-                items,
-                (onChanged) {
-                  nameId = onChanged;
-                },
-                (onValidate) {
-                  if (onValidate == Null) {
-                    return "please Select Client";
-                  }
-                },
-                optionLabel: 'label',
-                optionValue: 'id',
-                borderColor: Colors.black,
-                borderFocusColor: Colors.black,
-                borderRadius: 5,
-                paddingLeft: 0,
-                paddingRight: 0,
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Row(
+                  children: const [
+                    Text(
+                      'Client Name',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0, right: 10),
+                child: TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                      hintText: Storage.username,
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 2),
+                        borderRadius: BorderRadius.circular(5.0),
+                      )),
+                ),
               ),
               FormHelper.dropDownWidgetWithLabel(
                 context,
                 "Select Scheme",
                 "Select Scheme",
-                schemeId,
-                scheme,
+                controller.schemeId,
+                controller.scheme,
                 (onChanged) {
-                  schemeId = onChanged;
+                  var data = controller.scheme[int.parse(onChanged)];
+                  controller.isLoading(true);
+                  controller.schemeId = int.parse(data['scheme_id']);
+                  controller.schemeName = data['label'];
+                  controller.update();
+                  controller.isLoading(false);
                 },
                 (onValidate) {
                   if (onValidate == Null) {
@@ -119,10 +107,14 @@ class _SwitchRequestState extends State<SwitchRequest> {
                 context,
                 "Folio Number",
                 "Select Folio Number",
-                folioId,
-                folioNo,
+                controller.folioId,
+                controller.folioNo,
                 (onChanged) {
-                  folioId = onChanged;
+                  var data = controller.folioNo[int.parse(onChanged)];
+                  controller.isLoading(true);
+                  controller.folioId = data['label'];
+                  controller.update();
+                  controller.isLoading(false);
                 },
                 (onValidate) {
                   if (onValidate == Null) {
@@ -141,10 +133,10 @@ class _SwitchRequestState extends State<SwitchRequest> {
                 context,
                 "Target Scheme",
                 "Select Target Scheme",
-                targetSchemeId,
-                targetScheme,
+                controller.targetSchemeId,
+                controller.targetScheme,
                 (onChanged) {
-                  targetSchemeId = onChanged;
+                  controller.targetSchemeId = onChanged;
                 },
                 (onValidate) {
                   if (onValidate == null) {
@@ -168,15 +160,15 @@ class _SwitchRequestState extends State<SwitchRequest> {
                   children: [
                     const Text(
                       'Switch By',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     Radio(
-                        value: 1,
-                        groupValue: switchBy,
+                        value: 'amount',
+                        groupValue: controller.switchBy,
                         onChanged: (onChanged) {
-                          setState(() {
-                            switchBy = onChanged!;
-                          });
+                          controller.switchBy = onChanged!;
+                          controller.update();
                         }),
                     const Text(
                       'Amount',
@@ -191,12 +183,12 @@ class _SwitchRequestState extends State<SwitchRequest> {
                     width: 90,
                   ),
                   Radio(
-                      value: 2,
-                      groupValue: switchBy,
+                      value: 'unit',
+                      groupValue: controller.switchBy,
                       onChanged: (onChanged) {
-                        setState(() {
-                          switchBy = onChanged!;
-                        });
+                        print(onChanged);
+                        controller.switchBy = onChanged!;
+                        controller.update();
                       }),
                   const Text(
                     'Unit',
@@ -210,12 +202,11 @@ class _SwitchRequestState extends State<SwitchRequest> {
                     width: 90,
                   ),
                   Radio(
-                      value: 3,
-                      groupValue: switchBy,
+                      value: 'all units',
+                      groupValue: controller.switchBy,
                       onChanged: (onChanged) {
-                        setState(() {
-                          switchBy = onChanged!;
-                        });
+                        controller.switchBy = onChanged!;
+                        controller.update();
                       }),
                   const Text(
                     'All Units',
@@ -229,7 +220,8 @@ class _SwitchRequestState extends State<SwitchRequest> {
                   children: const [
                     Text(
                       'Available Amount',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     )
                   ],
                 ),
@@ -238,11 +230,11 @@ class _SwitchRequestState extends State<SwitchRequest> {
                 height: 10,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 10.0,right: 10.0),
+                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                 child: TextFormField(
                   readOnly: true,
                   decoration: InputDecoration(
-                      hintText: availableAmount,
+                      hintText: controller.switchBy,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       )),
@@ -257,7 +249,8 @@ class _SwitchRequestState extends State<SwitchRequest> {
                   children: const [
                     Text(
                       'Available Units',
-                      style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
                     )
                   ],
                 ),
@@ -266,11 +259,11 @@ class _SwitchRequestState extends State<SwitchRequest> {
                 height: 10,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 10.0,right: 10),
+                padding: const EdgeInsets.only(left: 10.0, right: 10),
                 child: TextFormField(
                   readOnly: true,
                   decoration: InputDecoration(
-                      hintText: availableUnit,
+                      hintText: controller.availableUnit,
                       border: OutlineInputBorder(
                         borderSide: const BorderSide(width: 2),
                         borderRadius: BorderRadius.circular(5.0),
@@ -318,20 +311,42 @@ class _SwitchRequestState extends State<SwitchRequest> {
               ),
               Row(
                 children: [
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.cyan[700],
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ElevatedButton(
+                        onPressed: controller.Fvalidate,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 15.0,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        child: const Text("Submit Your Request"),
                       ),
-                      onPressed: Fvalidate,
-                      child: const Text("Submit Your Request")),
-                  const SizedBox(
-                    width: 50,
+                    ),
                   ),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.cyan[700],
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ElevatedButton(
+                        onPressed: controller.Fvalidate,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red[900],
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 15.0,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        child: const Text("Reset"),
                       ),
-                      onPressed: Fvalidate, child: const Text("Reset")),
+                    ),
+                  ),
                 ],
               ),
             ],
