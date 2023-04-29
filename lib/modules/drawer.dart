@@ -89,7 +89,7 @@ class SideDrawer extends StatelessWidget {
                     ),
                     text: 'Dashboard',
                     onTap: () {
-                      Get.toNamed(Routes.dashboard);
+                      Get.offAndToNamed(Routes.home);
                     }),
                 const SizedBox(
                   height: 5,
@@ -116,7 +116,7 @@ class SideDrawer extends StatelessWidget {
                           ),
                           text: 'Purchase Request',
                           onTap: () {
-                            Get.to(() => const PurchaseRequest());
+                            Get.off(() => const PurchaseRequest());
                           }),
                       drawerOptions(
                           leading: const Icon(
@@ -212,7 +212,7 @@ class SideDrawer extends StatelessWidget {
                     ),
                     text: 'Change Password',
                     onTap: () {
-                      Get.toNamed(Routes.changePassword);
+                      Get.offAndToNamed(Routes.changePassword);
                     }),
                 const SizedBox(
                   height: 5,

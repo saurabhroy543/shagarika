@@ -15,15 +15,15 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primaryGrey = Color(0xFFe3e4db);
-    const primaryBlue = Color(0xFF0494bf);
+    const primaryGrey = Color(0xFFFFFFFF);
+    // const primaryBlue = Color(0xFF0494bf);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Colors.cyan[100],
+        backgroundColor: Colors.blue,
         drawer: SideDrawer(),
         appBar: AppBar(
-          backgroundColor: Colors.cyan[700],
+          backgroundColor: Colors.blue,
           title: const Text("Dashboard"),
           elevation: 0,
           actions: [

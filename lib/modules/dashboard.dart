@@ -20,7 +20,7 @@ class MyDashboard extends StatelessWidget {
             backgroundColor: Colors.cyan[100],
             drawer: SideDrawer(),
             appBar: AppBar(
-              title: const Text("Dashboard"),
+              title: const Text("Portfolio"),
               backgroundColor: Colors.cyan[700],
               elevation: 0,
               actions: [

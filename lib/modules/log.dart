@@ -55,21 +55,27 @@ class Login extends StatelessWidget {
                       padding: const EdgeInsets.only(
                           left: 15.0, right: 15.0, top: 15, bottom: 0),
                       //padding: EdgeInsets.symmetric(horizontal: 15),
-                      child: TextFormField(
+                      child: Obx(() =>TextFormField(
                         validator: (value) {
                           if (value!.isEmpty) {
                             return "enter a valid password";
                           }
                         },
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
+                        obscureText: controller.showPassword.value,
+                        decoration:  InputDecoration(
+                            border: const OutlineInputBorder(),
                             labelText: 'Password',
-                            hintText: 'Enter secure password'),
+                            hintText: 'Enter secure password',
+                            suffixIcon: IconButton(
+                                onPressed: (){
+                                  controller.showPassword.toggle();
+                                },
+                                icon: Icon(controller.showPassword.value ? Icons.visibility_off : Icons.visibility)),
+                        ),
                         onChanged: (password) {
                           controller.password = password;
                         },
-                      ),
+                      )),
                     ),
                     // TextButton(
                     //   onPressed: (){
