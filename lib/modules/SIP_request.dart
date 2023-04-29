@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shagarika/utils/storage.dart';
+// import 'package:shagarika/utils/storage_keys.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'controllers/sipRequestController.dart';
 import 'drawer.dart';
@@ -113,8 +114,8 @@ class SIPrequest extends StatelessWidget {
                   controller.isLoading(true);
                   controller.schemeId = int.parse(data['scheme_id']);
                   controller.schemeName = data['label'];
-                  controller.getschemedetail(
-                      controller.amcId, controller.schemeId,controller.schemeName);
+                  controller.getschemedetail(controller.amcId,
+                      controller.schemeId, controller.schemeName);
                   controller.update();
                   controller.isLoading(false);
                 },
@@ -280,7 +281,6 @@ class SIPrequest extends StatelessWidget {
                           controller.toDate = value!;
                           controller.update();
                         }) as DateTime;
-
                       },
                       child: Container(
                         padding: const EdgeInsets.all(13.0),
@@ -328,8 +328,8 @@ class SIPrequest extends StatelessWidget {
                 (onValidateval) {
                   if (onValidateval.isEmpty) {
                     return "Can't be left empty";
-                  }else{
-                    controller.amount=int.parse(onValidateval);
+                  } else {
+                    controller.amount = int.parse(onValidateval);
                     controller.update();
                   }
                 },
@@ -346,25 +346,42 @@ class SIPrequest extends StatelessWidget {
               ),
               Row(
                 children: [
-                  ElevatedButton(
-                      onPressed: controller.formValidate,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.cyan[700],
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30.0, vertical: 15.0),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0)),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ElevatedButton(
+                        onPressed: controller.formValidate,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 15.0,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        child: const Text("Submit Your Request"),
                       ),
-                      child: const Text("Submit Your Request")),
-                  const SizedBox(
-                    width: 50,
+                    ),
                   ),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.cyan[700],
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ElevatedButton(
+                        onPressed: controller.Reset,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red[900],
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 15.0,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                        child: const Text("Reset"),
                       ),
-                      onPressed: controller.Reset,
-                      child: const Text("Reset")),
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -374,3 +391,54 @@ class SIPrequest extends StatelessWidget {
     );
   }
 }
+
+// Widget _buildPopupDialog(BuildContext context, controller) {
+//   controller.formValidate;
+//   print('object');
+//   return AlertDialog(
+//     title: const Text('Your Selection'),
+//     content: Column(
+//       mainAxisSize: MainAxisSize.min,
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children:  <Widget>[
+//         const Text("Client Name:",style: TextStyle(color: Colors.grey)),
+//         Text(Storage.username!,style: const TextStyle(color: Colors.blue),),
+//         const SizedBox(height: 10,),
+//         const Text("AMC:",style: TextStyle(color: Colors.grey)),
+//         Text(controller.amcId,style: const TextStyle(color: Colors.blue),),
+//         const SizedBox(height: 10,),
+//
+//         const Text("Scheme:",style: TextStyle(color: Colors.grey)),
+//         Text(controller.schemeName,style: const TextStyle(color: Colors.blue),),
+//         const SizedBox(height: 10,),
+//
+//         const Text("Dividend:",style: TextStyle(color: Colors.grey)),
+//         Text(controller.dividendId,style: const TextStyle(color: Colors.blue),),
+//         const SizedBox(height: 10,),
+//
+//         const Text("Folio Number:",style: TextStyle(color: Colors.grey)),
+//         Text(controller.folioId,style: const TextStyle(color: Colors.blue),),
+//         const SizedBox(height: 10,),
+//
+//         const Text("SIP Type:",style: TextStyle(color: Colors.grey)),
+//         Text(controller.SIPTypeId,style: const TextStyle(color: Colors.blue),),
+//         ElevatedButton(
+//           onPressed: controller.formValidate,
+//           child: const Text('Submit'),
+//         ),
+//
+//
+//       ],
+//     ),
+//     actions: <Widget>[
+//       ElevatedButton(
+//         onPressed: () {
+//           controller.formValidate();
+//           print('object');
+//           Get.to(() => const Home());
+//         },
+//         child: const Text('Close'),
+//       ),
+//     ],
+//   );
+// }

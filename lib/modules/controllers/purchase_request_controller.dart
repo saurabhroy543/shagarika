@@ -11,6 +11,7 @@ import '../../data/repositories/folio_repo.dart';
 import '../../data/repositories/schemeDetail_repo.dart';
 import '../../data/repositories/scheme_list_repo.dart';
 import '../../data/repositories/user_detail_repo.dart';
+import '../../utils/constants.dart';
 
 class PurchaseRequestController extends GetxController {
   var isLoading = true.obs;
@@ -29,13 +30,17 @@ class PurchaseRequestController extends GetxController {
   void Fvalidate() {
     if (formkey.currentState!.validate()) {
       var request = {
-        "client name": Storage.username,
+        "clientpan": Storage.pan,
         "amc": amcId,
-        "scheme": schemeId,
+        "scheme": schemeName,
         "floio Number": folioId,
-        "amount": amount
+        "amt_inve": amount,
+        "dividend": "dividend payout",
+        "min_amt":minimumPurchase,
+        "ad_min_amt":minimumAdditionalPurchase,
+        "type":"purchase",
+        "arn_id":Base.arnNo,
       };
-      print(request);
     } else {
       print('error');
     }

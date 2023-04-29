@@ -18,7 +18,7 @@ class SipRequestController extends GetxController {
   final amcListRepo = AMCListRepository();
   late UserDetailModel userDetailModel;
   final userDetailRepo = UserDetailRepository();
-  final foliolRepo = FolioRepository();
+  final folioRepo = FolioRepository();
   late FolioModel folioModel;
 
   final schemeListRepo = SchemeListRepository();
@@ -44,7 +44,8 @@ class SipRequestController extends GetxController {
         "perpetualSIP": perpetualSIP
       };
       print(request);
-
+// Reset();
+// print(amount);
     }
   }
   void Reset() {
@@ -124,7 +125,7 @@ class SipRequestController extends GetxController {
     folioNo = [];
     userDetailModel = await userDetailRepo.fetchProfileDetail(Storage.userId);
     var pan = userDetailModel.msg!.panNo!;
-    folioModel = await foliolRepo.folioName(schemeName, schemeId, pan);
+    folioModel = await folioRepo.folioName(schemeName, schemeId, pan);
     for (int i = 0; i < folioModel.msg!.length; i++) {
       folioNo.add({'id': i, 'label': folioModel.msg?[i].folioNo});
     }

@@ -114,8 +114,8 @@ class PurchaseRequest extends StatelessWidget {
                   controller.isLoading(true);
                   controller.schemeId = int.parse(data['scheme_id']);
                   controller.schemeName = data['label'];
-                  controller.getschemedetail(
-                      controller.amcId, controller.schemeId,controller.schemeName);
+                  controller.getschemedetail(controller.amcId,
+                      controller.schemeId, controller.schemeName);
                   controller.update();
                   controller.isLoading(false);
                 },
@@ -250,29 +250,39 @@ class PurchaseRequest extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // added
                   children: [
-                    ElevatedButton(
+                    Expanded(
+                      // added
+                      child: ElevatedButton(
                         onPressed: controller.Fvalidate,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.cyan[700],
+                          backgroundColor: Colors.green,
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 30.0, vertical: 15.0),
+                              horizontal: 25.0, vertical: 16.0),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0)),
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
                         ),
-                        child: const Text("Submit Your Request")),
-                    const SizedBox(
-                      width: 50,
+                        child: const Text("Submit Request"),
+                      ),
                     ),
-                    ElevatedButton(
+                    const SizedBox(width: 10),
+                    Expanded(
+                      // added
+                      child: ElevatedButton(
                         onPressed: controller.Reset,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.cyan[700],
+                          backgroundColor: Colors.red[900],
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 25.0, vertical: 16.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
                         ),
-                        child: const Text("Reset")),
-                    const SizedBox(
-                      width: 40,
-                    )
+                        child: const Text("Reset"),
+                      ),
+                    ),
                   ],
                 ),
               ),
