@@ -5,4 +5,6 @@ class ApiPaths{
   static const String schemeList = '/getscheme/';
   static const String folio = '/getfolio/';
   static const String userDetail = '/ws-get-user-detail/';
+  static const String encrpytData = '/encryptdata/';
+  static const String sendMail = '//sendemail/';
 }
