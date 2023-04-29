@@ -52,35 +52,37 @@ class _SetPinPageState extends State<SetPinPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 40),
-            Text(
+            const Text(
               'Set-Up PIN',
-              style: Theme.of(context).textTheme.headline4,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 35,
+                fontWeight: FontWeight.normal,
+              ),
             ),
             const SizedBox(height: 20),
-            const Text('You can use this PIN to unlock the app.'),
+            const Text('You can use this PIN to unlock the app.\n                   [pin length : 4 to 25]'),
             const SizedBox(height: 30),
             Expanded(
               child: PinCodeWidget(
-                buttonColor: Colors.black,
-                emptyIndicatorColor: Colors.blue,
-                filledIndicatorColor: Colors.black,
-                onFullPin: (_, __) {
+                // emptyIndicatorColor: Colors.blue,
+                onEnter: (_, __) {
                   setState(() {
                     pin = _;
+                    Storage.MPIN = pin;
+                    Get.to(() => const VerifyPin());
                   });
                 },
-                initialPinLength: 4,
+                // initialPinLength: 4,
                 onChangedPin: (_) {},
-                clearOnFilled: false,
-                leftBottomWidget: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                    ),
-                    onPressed: () {
-                      Storage.MPIN = pin;
-                      Get.to(() => const VerifyPin());
-                    },
-                    child: const Text("Set PIN")),
+                borderSide:
+                const BorderSide(width: 4, color: Colors.blueAccent),
+                buttonColor: Colors.white,
+                numbersStyle: const TextStyle(
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black, // specify the desired text color here
+                ),
               ),
             ),
           ],

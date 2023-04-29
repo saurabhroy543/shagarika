@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pin_code_widget/flutter_pin_code_widget.dart';
 import 'package:shagarika/utils/storage.dart';
 import 'package:get/get.dart';
-
-import 'Redeemption_request.dart';
+import 'package:shagarika/utils/app_pages.dart';
+import 'package:shagarika/utils/app_utils.dart';
+import 'home.dart';
 
 class VerifyPin extends StatelessWidget {
   const VerifyPin({Key? key}) : super(key: key);
@@ -13,7 +14,7 @@ class VerifyPin extends StatelessWidget {
     return MaterialApp(
       title: 'VERIFY MPIN',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
+      theme: ThemeData.light(),
       home: const VerifyPinPage(),
     );
   }
@@ -46,18 +47,22 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 40),
-            Text(
+            const Text(
               'Verify PIN',
-              style: Theme.of(context).textTheme.headline4,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 35,
+                fontWeight: FontWeight.normal,
+              ),
             ),
             const SizedBox(height: 20),
             const Text('Please enter your MPIN.'),
             const SizedBox(height: 30),
             Expanded(
               child: PinCodeWidget(
-                onFullPin: (_, __) {
+                onEnter: (_, __) {
                   if (_ == Storage.MPIN) {
-                    Get.off(() => const RedemptionRequest());
+                    Get.off(() => const Home());
                   } else {
                     _ = '';
                     showDialog(
@@ -67,10 +72,24 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
                     );
                   }
                 },
-                initialPinLength: 4,
+                // initialPinLength: 4,
                 onChangedPin: (_) {},
-                borderSide: const BorderSide(width: 4, color: Colors.grey),
-                clearOnFilled: clear,
+                borderSide:
+                    const BorderSide(width: 4, color: Colors.blueAccent),
+                buttonColor: Colors.white,
+                numbersStyle: const TextStyle(
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black, // specify the desired text color here
+                ),
+                centerBottomWidget: TextButton(
+                  onPressed: () {
+                    AppUtils.logout();
+                    // Get.back();
+                    Get.offAllNamed(Routes.login);
+                  },
+                  child: const Text('Forgot PIN?'),
+                ),
               ),
             ),
           ],
