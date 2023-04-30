@@ -12,6 +12,14 @@ import '../../data/repositories/folio_repo.dart';
 import '../../data/repositories/schemeDetail_repo.dart';
 import '../../data/repositories/scheme_list_repo.dart';
 import '../../data/repositories/user_detail_repo.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:shagarika/data/repositories/send_mail_repo.dart';
+import 'package:shagarika/data/models/Mail_send_modals.dart';
+import 'package:shagarika/utils/app_pages.dart';
+
+
+
+
 
 class SipRequestController extends GetxController {
   var isLoading = true.obs;
@@ -20,6 +28,7 @@ class SipRequestController extends GetxController {
   final userDetailRepo = UserDetailRepository();
   final folioRepo = FolioRepository();
   late FolioModel folioModel;
+  late SendMailModel SendMail;
 
   final schemeListRepo = SchemeListRepository();
   late AMCListModel amcListModel;
@@ -27,51 +36,12 @@ class SipRequestController extends GetxController {
   GlobalKey<FormState> formkey = GlobalKey<FormState>();
   late SchemeDetailModel schemeDetailModel;
   final schemeDetailRepo = SchemeDetailRepository();
+  final sendMailRepo = SendMailRepository();
 
-  void formValidate() {
-    if (!formkey.currentState!.validate()) {
-    } else {
-      var request = {
-        "client name": Storage.username,
-        "amc": amcId,
-        "scheme": schemeId,
-        "floio Number": folioId,
-        "amount": amount,
-        "SIPTypeId": SIPTypeId,
-        "dividendId": dividendId,
-        "fromDate": fromDate,
-        "toDate": toDate,
-        "perpetualSIP": perpetualSIP
-      };
-      print(request);
-// Reset();
-// print(amount);
-    }
-  }
-  void Reset() {
-    scheme = [];
-    folioNo = [];
-    amount = 0;
-    update();
-  }
-  void valid() {
-    scheme = [];
-    folioNo = [];
-    amount = 0;
-    update();
-  }
 
-  var dateto = '';
   var fromDate = DateTime.now();
   var toDate = DateTime.now();
   bool perpetualSIP = false;
-
-  getDate(String date) {
-    DateTime res = DateTime.parse(date);
-    update();
-    return DateFormat('dd-MM-yyy').format(res).toString();
-  }
-
   var amcId;
   List<dynamic> amc = [];
   int? schemeId;
@@ -99,6 +69,47 @@ class SipRequestController extends GetxController {
     super.onInit();
   }
 
+  getDate(String date) {
+    DateTime res = DateTime.parse(date);
+    update();
+    return DateFormat('dd-MM-yyy').format(res).toString();
+  }
+
+  Future<void> formValidate() async {
+    if (!formkey.currentState!.validate()) {
+    } else {
+      EasyLoading.show(status: 'Loading');
+      schemeDetailModel = await schemeDetailRepo.schemeDetail(amcId, schemeId!);
+      var sipdates = schemeDetailModel.result![0].sipDates;
+      sipdates ??= "Date not available";
+      print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${sipdates.runtimeType}');
+      var request = {
+        "type":'sip',
+        "clientpan": Storage.pan,
+        "amc": amcId,
+        "scheme_name": schemeName,
+        "folio": folioId,
+        "dividend": dividendId,
+        "amt_inve": amount,
+        "sip_type": SIPTypeId,
+        "start_date": fromDate,
+        "end_date": toDate,
+        "al_sip_dates": sipdates
+      };
+      SendMail = (await sendMailRepo.sendMail(request))!;
+      EasyLoading.showToast(SendMail.msg!);
+      Get.offAllNamed(Routes.home);
+    }
+  }
+
+  void Reset() {
+    amcId=null;
+    scheme = [];
+    folioNo = [];
+    amount = 0;
+    update();
+  }
+
   Future getamcList() async {
     amcListModel = await amcListRepo.amcList();
     for (int i = 0; i < amcListModel.results!.length; i++) {
@@ -108,6 +119,7 @@ class SipRequestController extends GetxController {
   }
 
   Future getschemelist(String amcName) async {
+    EasyLoading.show(status: 'Loading');
     scheme = [];
     schemeListModel = await schemeListRepo.schemeList(amcName);
     for (int i = 0; i < schemeListModel.results!.length; i++) {
@@ -118,18 +130,17 @@ class SipRequestController extends GetxController {
       });
     }
     update();
+    EasyLoading.dismiss();
   }
 
-  Future getschemedetail(
-      String amcName, int schemeId, String schemeName) async {
+  Future getFolio(int schemeId, String schemeName) async {
+    EasyLoading.show(status: 'Loading');
     folioNo = [];
-    userDetailModel = await userDetailRepo.fetchProfileDetail(Storage.userId);
-    var pan = userDetailModel.msg!.panNo!;
-    folioModel = await folioRepo.folioName(schemeName, schemeId, pan);
+    folioModel = await folioRepo.folioName(schemeName, schemeId,Storage.pan!);
     for (int i = 0; i < folioModel.msg!.length; i++) {
       folioNo.add({'id': i, 'label': folioModel.msg?[i].folioNo});
     }
-    folioNo.add({'id': folioNo.length, 'label': "New Folio Number"});
     update();
+    EasyLoading.dismiss();
   }
 }

@@ -114,13 +114,13 @@ class SIPrequest extends StatelessWidget {
                   controller.isLoading(true);
                   controller.schemeId = int.parse(data['scheme_id']);
                   controller.schemeName = data['label'];
-                  controller.getschemedetail(controller.amcId,
+                  controller.getFolio(
                       controller.schemeId, controller.schemeName);
                   controller.update();
                   controller.isLoading(false);
                 },
                 (onValidate) {
-                  if (onValidate == Null) {
+                  if (onValidate == null) {
                     return "please Select Scheme";
                   }
                 },
@@ -146,7 +146,7 @@ class SIPrequest extends StatelessWidget {
                   controller.isLoading(false);
                 },
                 (onValidate) {
-                  if (onValidate == Null) {
+                  if (onValidate == null) {
                     return "please Select Dividend";
                   }
                 },
@@ -172,7 +172,7 @@ class SIPrequest extends StatelessWidget {
                   controller.isLoading(false);
                 },
                 (onValidate) {
-                  if (onValidate == Null) {
+                  if (onValidate == null) {
                     return "please Select Folio Number";
                   }
                 },
