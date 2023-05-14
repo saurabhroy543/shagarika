@@ -7,12 +7,12 @@ import '../models/folio_model.dart';
 
 class FolioRepository {
   Future<FolioModel> folioName(
-      String schemeName, int schemeId, String pan) async {
+      String schemeName, String pan) async {
     var body = {
       "arn_id": Base.arnNo,
       "scheme_name": schemeName,
       "pan": pan,
-      "scheme_id": schemeId
+      // "scheme_id": schemeId
     };
     var response =
         await NetworkRequester.shared.post(path: ApiPaths.folio, data: body);
