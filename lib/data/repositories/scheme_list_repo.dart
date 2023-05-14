@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:shagarika/data/models/Purchased_scheme_model.dart';
 import 'package:shagarika/utils/Network_requester.dart';
 import 'package:shagarika/utils/api_paths.dart';
 import 'package:shagarika/utils/constants.dart';
@@ -19,5 +20,17 @@ class SchemeListRepository {
     var data = json.decode(response);
     var result = {"results": data};
     return SchemeModel.fromJson(result);
+  }
+
+  Future<PurchasedSchemeModel> purchasedScheme() async{
+    var body = {
+      'arn_id': Base.arnNo,
+      'pan': Storage.pan,
+    };
+    var response = await NetworkRequester.shared
+        .post(path: ApiPaths.purchasedScheme, data: body);
+    var data = json.decode(response);
+    var result = {"result": data};
+    return PurchasedSchemeModel.fromJson(result);
   }
 }
