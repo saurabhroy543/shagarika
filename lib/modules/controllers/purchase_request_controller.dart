@@ -119,7 +119,7 @@ class PurchaseRequestController extends GetxController {
     schemeDetailModel = await schemeDetailRepo.schemeDetail(amcName, schemeId);
     minimumPurchase = schemeDetailModel.result![0].purchaseAmount!;
     minimumAdditionalPurchase = schemeDetailModel.result![0].addPurchaseAmt!;
-    folioModel = await foliolRepo.folioName(schemeName, schemeId, Storage.pan!);
+    folioModel = await foliolRepo.folioName(schemeName, Storage.pan!);
     for (int i = 0; i < folioModel.msg!.length; i++) {
       folioNo.add({'id': i, 'label': folioModel.msg?[i].folioNo});
     }
