@@ -136,7 +136,7 @@ class SipRequestController extends GetxController {
   Future getFolio(int schemeId, String schemeName) async {
     EasyLoading.show(status: 'Loading');
     folioNo = [];
-    folioModel = await folioRepo.folioName(schemeName, schemeId,Storage.pan!);
+    folioModel = await folioRepo.folioName(schemeName,Storage.pan!);
     for (int i = 0; i < folioModel.msg!.length; i++) {
       folioNo.add({'id': i, 'label': folioModel.msg?[i].folioNo});
     }

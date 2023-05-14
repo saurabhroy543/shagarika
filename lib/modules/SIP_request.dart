@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shagarika/utils/storage.dart';
-// import 'package:shagarika/utils/storage_keys.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 import 'controllers/sipRequestController.dart';
 import 'drawer.dart';
@@ -242,24 +241,27 @@ class SIPrequest extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () async {
-                        controller.fromDate = showDatePicker(
+                        final fromDate = await showDatePicker(
                           context: context,
                           initialDate: DateTime.now(),
                           firstDate: DateTime(2000),
                           lastDate: DateTime(2050),
-                        ).then((value) {
-                          controller.fromDate = value!;
+                        );
+
+                        if (fromDate != null) {
+                          controller.fromDate = fromDate;
                           controller.update();
-                        }) as DateTime;
+                        }
                       },
                       child: Container(
                         padding: const EdgeInsets.all(13.0),
                         decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                              color: Colors.black,
-                            )),
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                            color: Colors.black,
+                          ),
+                        ),
                         child: Text(
                           controller.getDate(controller.fromDate.toString()),
                           style:
@@ -272,24 +274,37 @@ class SIPrequest extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () async {
-                        controller.toDate = showDatePicker(
+                        final toDate = await showDatePicker(
                           context: context,
                           initialDate: DateTime.now(),
                           firstDate: DateTime(2000),
                           lastDate: DateTime(2050),
-                        ).then((value) {
-                          controller.toDate = value!;
+                        );
+
+                        if (toDate != null &&
+                            toDate.isAfter(controller.fromDate)) {
+                          controller.toDate = toDate;
                           controller.update();
-                        }) as DateTime;
+                        } else {
+                          controller.toDate = toDate;
+                          controller.update();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'To date must be greater than from date'),
+                            ),
+                          );
+                        }
                       },
                       child: Container(
                         padding: const EdgeInsets.all(13.0),
                         decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                              color: Colors.black,
-                            )),
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                            color: Colors.black,
+                          ),
+                        ),
                         child: Text(
                           controller.getDate(controller.toDate.toString()),
                           style: const TextStyle(
@@ -350,7 +365,18 @@ class SIPrequest extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: ElevatedButton(
-                        onPressed: controller.formValidate,
+                        onPressed: () {
+                          if (controller.toDate.isAfter(controller.fromDate)) {
+                            controller.formValidate();
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'To date must be greater than from date',style: TextStyle(color: Colors.red),),
+                              ),
+                            );
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           padding: const EdgeInsets.symmetric(
