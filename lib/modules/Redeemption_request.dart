@@ -84,7 +84,11 @@ class RedemptionRequest extends StatelessWidget {
                 controller.AMCId,
                 controller.AMC,
                 (onChanged) {
-                  controller.AMCId = onChanged;
+                  var data = controller.AMC[int.parse(onChanged)];
+                  controller.AMCId = data['amc_code'];
+                  controller.AMC_name = data['label'];
+                  controller.getTargetScheme(data['amc_code']);
+                  controller.update();
                 },
                 (onValidate) {
                   if (onValidate == null) {
@@ -106,7 +110,10 @@ class RedemptionRequest extends StatelessWidget {
                 controller.schemeId,
                 controller.scheme,
                 (onChanged) {
-                  controller.schemeId = onChanged;
+                  var data = controller.scheme[int.parse(onChanged)];
+                  controller.schemeId = data['label'];
+                  controller.getFolio(data['label']);
+                  controller.update();
                 },
                 (onValidate) {
                   if (onValidate == Null) {
@@ -128,10 +135,13 @@ class RedemptionRequest extends StatelessWidget {
                 controller.folioId,
                 controller.folioNo,
                 (onChanged) {
-                  controller.folioId = onChanged;
-                },
+                  var data = controller.folioNo[int.parse(onChanged)];
+                  controller.folioId = data['label'];
+                  controller.getSchemeUnits(
+                      controller.schemeId,data['label']);
+                  controller.update();                },
                 (onValidate) {
-                  if (onValidate == Null) {
+                  if (onValidate == null) {
                     return "please select Folio Number";
                   }
                 },
@@ -160,6 +170,10 @@ class RedemptionRequest extends StatelessWidget {
                         groupValue: controller.redeemBy,
                         onChanged: (onChanged) {
                           controller.redeemBy = onChanged!;
+                          controller.value = 'Amount';
+                          controller.showCalculatedSwitchAmount = false;
+                          controller.showUnitAmountTextBox = true;
+                          controller.totalValue = onChanged;
                           controller.update();
                         }),
                     const Text(
@@ -181,6 +195,10 @@ class RedemptionRequest extends StatelessWidget {
                         groupValue: controller.redeemBy,
                         onChanged: (onChanged) {
                           controller.redeemBy = onChanged!;
+                          controller.value = 'Unit';
+                          controller.totalValue = '0';
+                          controller.showUnitAmountTextBox = true;
+                          controller.showCalculatedSwitchAmount = true;
                           controller.update();
                         }),
                     const Text(
@@ -202,6 +220,11 @@ class RedemptionRequest extends StatelessWidget {
                         groupValue: controller.redeemBy,
                         onChanged: (onChanged) {
                           controller.redeemBy = onChanged!;
+                          // controller.value = 'Units';
+                          controller.showCalculatedSwitchAmount = true;
+                          controller.showUnitAmountTextBox = false;
+                          controller
+                              .calculateTotalValue(controller.availableUnit);
                           controller.update();
                         }),
                     const Text(
@@ -231,7 +254,7 @@ class RedemptionRequest extends StatelessWidget {
                 child: TextFormField(
                   readOnly: true,
                   decoration: InputDecoration(
-                      hintText: controller.availableAmount,
+                      hintText: controller.availableAmount.toString(),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       )),
@@ -267,17 +290,36 @@ class RedemptionRequest extends StatelessWidget {
                       )),
                 ),
               ),
+              if (controller.showUnitAmountTextBox)
               FormHelper.inputFieldWidgetWithLabel(
                 context,
                 "Units to Redeem",
-                "Units to Redeem",
+                "${controller.value} to Redeem",
                 "",
                 (onValidateval) {
-                  if (onValidateval.isEmpty) {
+                  if (controller.redeemBy != 'all units' &&
+                      onValidateval.isEmpty){
                     return "Can't be left empty";
+                  }else {
+                    if (controller.redeemBy == 'all units') {
+                      onValidateval = controller.availableUnit;
+                    }else if (controller.redeemBy == 'amount' && double.parse(onValidateval)> controller.availableAmount){
+                      return "You have only ${controller.availableAmount}";
+                    }else if (controller.redeemBy == 'unit' && double.parse(onValidateval)> double.parse(controller.availableUnit)){
+                      return "You have only ${controller.availableUnit}";
+                    }
+                    controller.totalValue = onValidateval;
+                    controller.update();
                   }
                 },
                 (onSaved) {},
+                onChange: (value) {
+                  if (controller.redeemBy == 'unit') {
+                    controller.calculateTotalValue(value);
+                    // value = double.parse(value);
+                    controller.update();
+                  }
+                },
                 borderColor: Colors.black,
                 borderFocusColor: Colors.black,
                 borderRadius: 5,
@@ -285,24 +327,38 @@ class RedemptionRequest extends StatelessWidget {
                 paddingRight: 0,
                 isNumeric: true,
               ),
-              FormHelper.inputFieldWidgetWithLabel(
-                context,
-                "Calculated Redemption Amount",
-                "Calculated Redemption Amount",
-                "",
-                (onValidateval) {
-                  if (onValidateval.isEmpty) {
-                    return "Can't be left empty";
-                  }
-                },
-                (onSaved) {},
-                borderColor: Colors.black,
-                borderFocusColor: Colors.black,
-                borderRadius: 5,
-                paddingLeft: 0,
-                paddingRight: 0,
-                isNumeric: true,
+              const SizedBox(
+                height: 10,
               ),
+              if (controller.showCalculatedSwitchAmount)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Row(
+                    children: const [
+                      Text(
+                        'Calculated Amount',
+                        style: TextStyle(
+                            fontSize: 19, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
+                ),
+              const SizedBox(
+                height: 10,
+              ),
+              if (controller.showCalculatedSwitchAmount)
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0, right: 10),
+                  child: TextFormField(
+                    readOnly: true,
+                    decoration: InputDecoration(
+                        hintText: (controller.totalValue).toString(),
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(width: 2),
+                          borderRadius: BorderRadius.circular(5.0),
+                        )),
+                  ),
+                ),
               const SizedBox(
                 height: 10,
               ),
@@ -320,7 +376,7 @@ class RedemptionRequest extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                         ),
-                        onPressed: controller.Fvalidate,
+                        onPressed: controller.formValidate,
                         child: const Text("Submit Your Request"),
                       ),
                     ),

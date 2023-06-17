@@ -85,13 +85,14 @@ class SwitchRequest extends StatelessWidget {
                 (onChanged) {
                   var data = controller.scheme[int.parse(onChanged)];
                   controller.isLoading(true);
-                  controller.schemeId = int.parse(data['scheme_id']);
+                  controller.schemeId = data['scheme_id'];
                   controller.schemeName = data['label'];
+                  controller.getFolio(data['label']);
                   controller.update();
                   controller.isLoading(false);
                 },
                 (onValidate) {
-                  if (onValidate == Null) {
+                  if (onValidate == null) {
                     return "please Select Scheme";
                   }
                 },
@@ -111,13 +112,13 @@ class SwitchRequest extends StatelessWidget {
                 controller.folioNo,
                 (onChanged) {
                   var data = controller.folioNo[int.parse(onChanged)];
-                  controller.isLoading(true);
                   controller.folioId = data['label'];
+                  controller.getSchemeUnits(
+                      controller.schemeName, data['label']);
                   controller.update();
-                  controller.isLoading(false);
                 },
                 (onValidate) {
-                  if (onValidate == Null) {
+                  if (onValidate == null) {
                     return "please select Folio Number";
                   }
                 },
@@ -168,6 +169,10 @@ class SwitchRequest extends StatelessWidget {
                         groupValue: controller.switchBy,
                         onChanged: (onChanged) {
                           controller.switchBy = onChanged!;
+                          controller.value = 'Amount';
+                          controller.showCalculatedSwitchAmount = false;
+                          controller.showUnitAmountTextBox = true;
+                          controller.totalValue = onChanged;
                           controller.update();
                         }),
                     const Text(
@@ -186,8 +191,11 @@ class SwitchRequest extends StatelessWidget {
                       value: 'unit',
                       groupValue: controller.switchBy,
                       onChanged: (onChanged) {
-                        print(onChanged);
                         controller.switchBy = onChanged!;
+                        controller.value = 'Unit';
+                        controller.totalValue = '0';
+                        controller.showUnitAmountTextBox = true;
+                        controller.showCalculatedSwitchAmount = true;
                         controller.update();
                       }),
                   const Text(
@@ -206,6 +214,11 @@ class SwitchRequest extends StatelessWidget {
                       groupValue: controller.switchBy,
                       onChanged: (onChanged) {
                         controller.switchBy = onChanged!;
+                        controller.value = 'Units';
+                        controller.showCalculatedSwitchAmount = true;
+                        controller.showUnitAmountTextBox = false;
+                        controller
+                            .calculateTotalValue(controller.availableUnit);
                         controller.update();
                       }),
                   const Text(
@@ -234,7 +247,7 @@ class SwitchRequest extends StatelessWidget {
                 child: TextFormField(
                   readOnly: true,
                   decoration: InputDecoration(
-                      hintText: controller.switchBy,
+                      hintText: controller.availableAmount.toString(),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       )),
@@ -270,42 +283,73 @@ class SwitchRequest extends StatelessWidget {
                       )),
                 ),
               ),
-              FormHelper.inputFieldWidgetWithLabel(
-                context,
-                "Units to Switch",
-                "Units to Switch",
-                "",
-                (onValidateval) {
-                  if (onValidateval.isEmpty) {
-                    return "Can't be left empty";
-                  }
-                },
-                (onSaved) {},
-                borderColor: Colors.black,
-                borderFocusColor: Colors.black,
-                borderRadius: 5,
-                paddingLeft: 0,
-                paddingRight: 0,
-                isNumeric: true,
+              if (controller.showUnitAmountTextBox)
+                FormHelper.inputFieldWidgetWithLabel(
+                  context,
+                  "Units to Switch",
+                  "${controller.value} to Switch",
+                  "",
+                  (onValidateval) {
+                    if (controller.switchBy != 'all units' &&
+                        onValidateval.isEmpty) {
+                      return "Can't be left empty";
+                    } else {
+                      if (controller.switchBy == 'all units') {
+                        onValidateval = controller.availableUnit;
+                      }else if (controller.switchBy == 'unit' && double.parse(onValidateval) > double.parse(controller.availableUnit)) {
+                        return "You have only ${controller.availableUnit} units";
+                      }
+                      controller.amount = onValidateval;
+                      controller.update();
+                    }
+                  },
+                  (onSaved) {},
+                  onChange: (value) {
+                    if (controller.switchBy == 'unit') {
+                      controller.calculateTotalValue(value);
+                      // value = double.parse(value);
+                      controller.update();
+                    }
+                  },
+                  borderColor: Colors.black,
+                  borderFocusColor: Colors.black,
+                  borderRadius: 5,
+                  paddingLeft: 0,
+                  paddingRight: 0,
+                  isNumeric: true,
+                ),
+              const SizedBox(
+                height: 10,
               ),
-              FormHelper.inputFieldWidgetWithLabel(
-                context,
-                "Calculated Switch Amount",
-                "Calculated Switch Amount",
-                "",
-                (onValidateval) {
-                  if (onValidateval.isEmpty) {
-                    return "Can't be left empty";
-                  }
-                },
-                (onSaved) {},
-                borderColor: Colors.black,
-                borderFocusColor: Colors.black,
-                borderRadius: 5,
-                paddingLeft: 0,
-                paddingRight: 0,
-                isNumeric: true,
+              if (controller.showCalculatedSwitchAmount)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Row(
+                    children: const [
+                      Text(
+                        'Calculated Amount',
+                        style: TextStyle(
+                            fontSize: 19, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
+                ),
+              const SizedBox(
+                height: 10,
               ),
+              if (controller.showCalculatedSwitchAmount)
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0, right: 10),
+                  child: TextFormField(
+                    readOnly: true,
+                    decoration: InputDecoration(
+                        hintText: (controller.totalValue).toString(),
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(width: 2),
+                          borderRadius: BorderRadius.circular(5.0),
+                        )),
+                  ),
+                ),
               const SizedBox(
                 height: 10,
               ),
@@ -315,7 +359,7 @@ class SwitchRequest extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: ElevatedButton(
-                        onPressed: controller.Fvalidate,
+                        onPressed: controller.formValidate,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           padding: const EdgeInsets.symmetric(
@@ -333,7 +377,7 @@ class SwitchRequest extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: ElevatedButton(
-                        onPressed: controller.Fvalidate,
+                        onPressed: controller.reset,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red[900],
                           padding: const EdgeInsets.symmetric(

@@ -4,19 +4,20 @@ import 'package:shagarika/utils/storage.dart';
 import 'package:shagarika/data/models/amc_deatil_model.dart';
 import 'package:shagarika/data/repositories/amc_detail_repo.dart';
 
+import '../../data/models/asset_list_model.dart';
+import '../../data/repositories/amc_list_repo.dart';
+
 class DashboardController extends GetxController {
   var isLoading = true.obs;
   final amcDetailRepo = AmcDetailRepository();
+  final assetDetailRepo = AssetListRepository();
   late AmcDetailModel amcModel;
+  late AssetListModel assetModel;
   Map<String, double> amcDataMap={};
   List<String> summaryName = ['Current Value','Investment','Gain/Loss','Absolute Return'];
   List<dynamic> summaryAmount=[];
   Map<String, double> dataMap = {
-    "Present:20.0": 20,
-    "Absent: 30": 30,
-    "Leave: 40": 40,
-    "Holiday: 50": 50,
-    "On Duty : 20": 20,
+
   };
   List<Color> colorList = [
     Colors.blue,
@@ -30,7 +31,7 @@ class DashboardController extends GetxController {
   void onInit() async {
     await gettAmcDetail();
     await getSummaryAmount();
-    await getAmcMapData();
+    await getAssetMapData();
     update();
     isLoading(false);
 
@@ -39,16 +40,21 @@ class DashboardController extends GetxController {
 
   Future gettAmcDetail() async {
     amcModel = await amcDetailRepo.amcDetail(Storage.userId);
-    update();
-  }
-
-  Future getAmcMapData() async {
     for (int i = 0; i < amcModel.msg!.amc!.length; i++) {
       amcDataMap["${amcModel.msg?.amc?[i].aMCName?.toString() ?? ''} : ${amcModel.msg?.amc?[i].amount}"] =
           amcModel.msg?.amc?[i].percentage?.toDouble() ?? 0.0;
     }
     update();
+  }
 
+  Future getAssetMapData() async {
+    assetModel = await assetDetailRepo.assetList();
+    for (int i = 0; i < assetModel.msg!.length; i++) {
+      dataMap["${assetModel.msg![i].assetType ?? ''} : ${assetModel.msg?[i].purchaseValue}"] =
+          assetModel.msg?[i].purchaseValue?.toDouble() ?? 0.0;
+    }
+    update();
+  print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>$dataMap');
   }
 
   Future getSummaryAmount() async {

@@ -76,15 +76,16 @@ class SipRequestController extends GetxController {
   }
 
   Future<void> formValidate() async {
-    if (!formkey.currentState!.validate()) {
-    } else {
-      EasyLoading.show(status: 'Loading');
+    EasyLoading.show(status: 'Loading');
+
+    final isValid = formkey.currentState!.validate();
+    if (isValid) {
       schemeDetailModel = await schemeDetailRepo.schemeDetail(amcId, schemeId!);
-      var sipdates = schemeDetailModel.result![0].sipDates;
-      sipdates ??= "Date not available";
-      print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${sipdates.runtimeType}');
-      var request = {
-        "type":'sip',
+      final sipdates = schemeDetailModel.result![0].sipDates;
+      final formattedSipDates = sipdates ?? "Date not available";
+
+      final request = {
+        "type": 'sip',
         "clientpan": Storage.pan,
         "amc": amcId,
         "scheme_name": schemeName,
@@ -94,11 +95,15 @@ class SipRequestController extends GetxController {
         "sip_type": SIPTypeId,
         "start_date": fromDate,
         "end_date": toDate,
-        "al_sip_dates": sipdates
+        "al_sip_dates": formattedSipDates
       };
+
       SendMail = (await sendMailRepo.sendMail(request))!;
       EasyLoading.showToast(SendMail.msg!);
       Get.offAllNamed(Routes.home);
+    } else {
+      // Handle case when form is not valid
+      EasyLoading.showToast('Invalid form. Please check your inputs.');
     }
   }
 
