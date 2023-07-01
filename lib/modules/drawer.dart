@@ -5,6 +5,7 @@ import 'package:shagarika/modules/Redeemption_request.dart';
 import 'package:shagarika/modules/SIP_request.dart';
 import 'package:shagarika/modules/purchase_request.dart';
 import 'package:shagarika/modules/switch_request.dart';
+import 'package:shagarika/modules/total_investment_report.dart';
 import 'package:shagarika/modules/transaction_report.dart';
 import '../utils/app_pages.dart';
 import '../utils/app_utils.dart';
@@ -165,7 +166,7 @@ class SideDrawer extends StatelessWidget {
                           ),
                           text: 'Total Investment Report',
                           onTap: () {
-                            // Get.to(() => LeaveBalanceView());
+                            Get.to(() => const TotalInvestmentReport());
                           }),
                       drawerOptions(
                           leading: const Icon(

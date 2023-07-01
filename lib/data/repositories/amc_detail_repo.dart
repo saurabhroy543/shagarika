@@ -10,6 +10,7 @@ class AmcDetailRepository {
     var body = {'user_id': userId, 'arn_id': Base.arnNo};
     var response = await NetworkRequester.shared.post(
         path: ApiPaths.amcDetail, data: body);
+    print('response for amc data >>>>>>>>>>>>>>$response');
     var data = json.decode(response);
     return AmcDetailModel.fromJson(data);
   }

@@ -13,4 +13,5 @@ class ApiPaths{
   static const String getSchemeUnits = '/getschemeunits/';
   static const String getAmcByPan = '/getamcbypan/';
   static const String getSchemeByAmc = '/getschemebypanamc/';
+  static const String dataTotalInv = '/data_total_inv/';
 }
